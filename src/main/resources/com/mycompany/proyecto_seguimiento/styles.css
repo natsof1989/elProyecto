@@ -10,7 +10,7 @@
     -fx-background-radius: 15px;
     -fx-border-width: 3px;
     -fx-border-radius: 12px;
-    -fx-padding: 30px;
+    -fx-padding: 15px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 20, 0, 0, 8);
 }
 
@@ -77,10 +77,29 @@
     -fx-font-size: 14px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
     -fx-padding: 10px 20px;
+    -fx-border-color: #1e88e5;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-transition: all 0.3s ease;
 }
 
 .boton-azul:hover {
-    -fx-background-color: #1565c0;
+    -fx-background-color: white;
+    -fx-text-fill: #1565c0;
+    -fx-border-color: #1565c0;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 144, 255, 0.4), 10, 0, 0, 4);
+    -fx-font-weight: bold;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.boton-azul:pressed {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #0d47a1;
+    -fx-border-color: #0d47a1;
+    -fx-effect: dropshadow(three-pass-box, rgba(13, 71, 161, 0.3), 6, 0, 0, 2);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
 }
 
 /* Botón Blanco (Secundario) */
@@ -146,4 +165,130 @@
 /* Efecto hover para los botones */
 #contenedorRoles .button:hover {
     -fx-background-color: #e0e0e0;
+}
+.titled-pane-celeste {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.titled-pane-celeste > .title {
+    -fx-background-color: linear-gradient(to bottom, #e6f7ff, #b3e0ff);
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-border-radius: 5px 5px 0 0;
+    -fx-padding: 10px 15px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #006699;
+    -fx-border-color: #99d6ff;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.titled-pane-celeste > .title > .arrow-button .arrow {
+    -fx-background-color: #0088cc;
+    -fx-scale-shape: true;
+    -fx-padding: 4px;
+}
+
+.titled-pane-celeste > .content {
+    -fx-background-color: #f7fbff;
+    -fx-padding: 15px;
+    -fx-border-color: #cce5ff;
+    -fx-border-width: 0 1px 1px 1px;
+    -fx-border-radius: 0 0 5px 5px;
+}
+
+.titled-pane-celeste:hover > .title {
+    -fx-background-color: linear-gradient(to bottom, #d9f0ff, #99d6ff);
+}
+
+.titled-pane-celeste:focused > .title {
+    -fx-background-color: #99d6ff;
+    -fx-background-insets: 0;
+    -fx-border-color: #66c2ff;
+}
+
+.titled-pane-celeste > .title > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* Clase para el VBox contenedor con celeste blanquecino */
+.contenedor-botones {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e1f5fe);
+    -fx-padding: 0;
+    -fx-spacing: 0;
+    -fx-background-radius: 10px;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #b3e5fc;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(3, 169, 244, 0.15), 8, 0, 0, 2);
+}
+
+/* Clase para los botones con degradado celeste */
+.boton-nuevo {
+    -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+    -fx-text-fill: #1565c0;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-font-weight: 600;
+    -fx-padding: 14px 20px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+/* Efecto hover - azul más fuerte con texto blanco */
+.boton-nuevo:hover {
+    -fx-background-color: linear-gradient(to bottom, #42a5f5, #1976d2);
+    -fx-border-color: #0d47a1;
+    -fx-border-width: 0 0 0 4px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(13, 71, 161, 0.25), 8, 0, 0, 2);
+}
+
+/* Efecto pressed/selected - azul oscuro sólido */
+.boton-nuevo:pressed,
+.boton-nuevo:selected {
+    -fx-background-color: #1565c0;
+    -fx-border-color: #0d47a1;
+    -fx-border-width: 0 0 0 4px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 700;
+    
+}
+
+/* Remover borde inferior del último botón */
+.boton-nuevo:last-child {
+    -fx-border-width: 0;
+    -fx-background-radius: 0 0 10px 10px;
+}
+
+.boton-nuevo:last-child:hover,
+.boton-nuevo:last-child:pressed,
+.boton-nuevo:last-child:selected {
+    -fx-border-width: 0 0 0 4px;
+    -fx-background-radius: 0 0 10px 10px;
+}
+
+/* Primer botón con esquinas redondeadas superiores */
+.boton-nuevo:first-child {
+    -fx-background-radius: 10px 10px 0 0;
+}
+
+/* Separador sutil entre botones */
+.boton-nuevo {
+    -fx-border-insets: 0 0 1px 0;
+    -fx-background-insets: 0 0 1px 0;
+}
+
+.boton-nuevo:last-child {
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
 }

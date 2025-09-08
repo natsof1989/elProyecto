@@ -31,6 +31,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -79,13 +80,25 @@ public class AbrirCasoController implements Initializable {
     CasoSeleccionado datosCaso = CasoSeleccionado.getInstancia(); 
     LocalDateTime fecha = datosCaso.getFecha();
     @FXML
-    private GridPane equipoT_content;
-    @FXML
-    private Label lb_1;
+    private TitledPane equipoT_content;
     @FXML
     private ScrollPane scroll_equipo;
     @FXML
     private Button btn_asignar;
+    @FXML
+    private TitledPane opcionesCaso;
+    @FXML
+    private TitledPane opcionesET;
+    @FXML
+    private Button btn_cas_historial;
+    @FXML
+    private Button btn_orienta_historial;
+    @FXML
+    private TitledPane jefa_content;
+    @FXML
+    private Button btn_finCaso;
+    @FXML
+    private Button btn_cargarOrienta;
     
     
     @Override
@@ -118,29 +131,33 @@ public class AbrirCasoController implements Initializable {
         try {
             jefa = equipoTecDAO.perteneceDepartamento1(ci);
             asignados = equipoTecDAO.obtenerAsignados(idCaso); 
+            
             if(asignados!=null){
                 CasoSeleccionado.getInstancia().setAsignados(asignados);
             }
             
-            if (jefa) {
-                btn_asignar.setVisible(true);
-
-            } else {
-                btn_asignar.setVisible(false);
-            }
+            jefa_content.setVisible(jefa);
+           
         } catch (SQLException ex) {
             Logger.getLogger(AbrirCasoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-            equipoT_content.setVisible(false); // Se oculta siempre
+          
+        String fxml = CasoSeleccionado.getInstancia().getFxmlAnterior(); 
 
-    if (CasoSeleccionado.getInstancia().getFxmlAnterior()!="teacher1") {
-        equipoT_content.setVisible(true);
-        if (!asignados.isEmpty()) {
-            btn_asignar.setText("Reasignar");
-            datosCaso.setAsignados(asignados);
-            mostrarEquipoContent(asignados);
+        if ("teacher1".equals(fxml)) {
+            equipoT_content.setVisible(false);
+            opcionesET.setVisible(false);
+            
+        } else{
+           equipoT_content.setVisible(true);
+           opcionesET.setVisible(true);   
+           if (!asignados.isEmpty()) {
+                btn_asignar.setText("Reasignar");
+                datosCaso.setAsignados(asignados);
+                mostrarEquipoContent(asignados);  // <-- SOLO AQUÍ LO LLAMÁS
+            }
+           // <-- NO llamás a mostrarEquipoContent(), por eso el ScrollPane queda vacío
         }
-    }
 
 
         // TODO
@@ -153,15 +170,13 @@ public class AbrirCasoController implements Initializable {
     List<equipoTecnico> equipos = ET_singleton.getInstancia().getEquipos();
 
     for (equipoTecnico et : equipos) {
-        if (asignados.contains(Integer.parseInt(et.getCi()))) {
+        if (asignados.contains(Integer.valueOf(et.getCi()))) {
             
             Label label = new Label(et.getNombreCompleto() + " - " + et.getDepartamento());
             label.setStyle("-fx-padding: 6; -fx-background-color: #f1f1f1; -fx-border-color: #ccc; -fx-background-radius: 5;");
             content.getChildren().add(label);
         }
-        /*if(asignados.contains(ci)){
-            link_writeOrientacion.setVisible(true);
-        } */
+
 
     }
 }
@@ -207,6 +222,18 @@ public class AbrirCasoController implements Initializable {
         ControladorUtils.abrirModal("asignar_Caso", "Asignación de los encargados de atender el caso");
        
         
+    }
+
+    @FXML
+    private void hisOrientacion(ActionEvent event) {
+    }
+
+    @FXML
+    private void finCaso(ActionEvent event) {
+    }
+
+    @FXML
+    private void cargarOrienta(ActionEvent event) {
     }
 
 }
