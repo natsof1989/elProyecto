@@ -24,7 +24,7 @@
             </TableView>
             <TextField fx:id="txt_buscar" layoutX="23.0" layoutY="85.0" onKeyReleased="#buscarCaso" prefHeight="36.0" prefWidth="664.0" promptText="🔎" styleClass="campo-texto" />
             <Button fx:id="btn_abrir" disable="true" layoutX="280.0" layoutY="392.0" mnemonicParsing="false" onAction="#AbrirCaso" prefHeight="38.0" prefWidth="126.0" styleClass="boton-azul" text="Abrir caso" />
-            <Button fx:id="btn_volver" layoutX="35.0" layoutY="32.0" mnemonicParsing="false" onAction="#volver" prefHeight="38.0" prefWidth="55.0" styleClass="boton-azul" text="⬅" />
+            <Button fx:id="btn_volver" layoutX="35.0" layoutY="32.0" mnemonicParsing="false" onAction="#volver" prefHeight="42.0" prefWidth="68.0" styleClass="boton-azul" text="⬅" />
          </children>
       </Pane>
    </children>

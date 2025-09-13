@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="544.0" prefWidth="560.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.EquipoTecnicoController">
+
+<HBox alignment="CENTER" prefHeight="539.0" prefWidth="494.0" spacing="20.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.EquipoTecnicoController">
    <children>
-      <VBox layoutX="43.0" layoutY="28.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="499.0" prefWidth="465.0" styleClass="panel-contenedor" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="43.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="28.0">
+      <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="485.0" prefWidth="448.0" styleClass="panel-contenedor" HBox.hgrow="NEVER">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="29.0" prefWidth="483.0" styleClass="titulo-principal" text="Bienvenido" VBox.vgrow="ALWAYS" />
             <GridPane alignment="CENTER" prefHeight="96.0" prefWidth="401.0">
@@ -45,4 +47,7 @@
          </children>
       </VBox>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</HBox>

@@ -110,7 +110,8 @@ public class EquipoTecnico1Controller implements Initializable {
         cs.setEspecialidad(seleccionado.getEspecialidad());
         cs.setCurso(seleccionado.getCurso());
         cs.setFxmlAnterior("equipoTecnico1");
-
+        System.out.println(seleccionado.isActivo());
+        cs.setActivo(seleccionado.isActivo());
         casoDAO.cargarDetalleCaso(seleccionado.getId_caso());
         ControladorUtils.cambiarVista("AbrirCaso");
     }

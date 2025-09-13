@@ -35,6 +35,7 @@ public class CasoSeleccionado {
     private String extension; 
     private List<Integer> asignados;
     
+    private boolean activo; 
 
     public List<Integer> getAsignados() {
         return asignados;
@@ -150,6 +151,14 @@ public class CasoSeleccionado {
         if (asignados != null) {
             asignados.clear(); // limpia la lista
         }
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
     
     // Método de conveniencia para resetear la instancia si es necesario

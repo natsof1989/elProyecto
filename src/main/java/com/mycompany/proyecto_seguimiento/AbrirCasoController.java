@@ -7,6 +7,8 @@ package com.mycompany.proyecto_seguimiento;
 import com.mycompany.proyecto_seguimiento.clases.ET_singleton;
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
+import com.mycompany.proyecto_seguimiento.clases.Orientacion;
+import com.mycompany.proyecto_seguimiento.clases.OrientacionDAO;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
@@ -73,6 +75,7 @@ public class AbrirCasoController implements Initializable {
     
     private final conexion dbConexion = new conexion();
     
+    private final OrientacionDAO orientaDao = new OrientacionDAO(dbConexion.getConnection()); 
     private final equipoTecnicoDAO equipoTecDAO = new equipoTecnicoDAO(dbConexion.getConnection());
     private final int idCaso = CasoSeleccionado.getInstancia().getIdCaso();
     List<Integer> asignados = new ArrayList<>(); 
@@ -99,7 +102,10 @@ public class AbrirCasoController implements Initializable {
     private Button btn_finCaso;
     @FXML
     private Button btn_cargarOrienta;
+    @FXML
+    private Text txt_estado;
     
+     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -113,6 +119,7 @@ public class AbrirCasoController implements Initializable {
         txt_descripcion.setText(datosCaso.getDescripcion());
         txt_profe.setText(datosCaso.getNombreProfesor());
         txt_CI.setText(datosCaso.getCiProfesor());
+       
         
         
          if (datosCaso.getArchivo() != null) {
@@ -143,21 +150,34 @@ public class AbrirCasoController implements Initializable {
         }
           
         String fxml = CasoSeleccionado.getInstancia().getFxmlAnterior(); 
-
-        if ("teacher1".equals(fxml)) {
+        
+        if ("teacher1".equals(fxml) || "teacher2".equals(fxml)) {
             equipoT_content.setVisible(false);
-            opcionesET.setVisible(false);
-            
+            opcionesET.setVisible(false);    
         } else{
            equipoT_content.setVisible(true);
            opcionesET.setVisible(true);   
            if (!asignados.isEmpty()) {
                 btn_asignar.setText("Reasignar");
                 datosCaso.setAsignados(asignados);
-                mostrarEquipoContent(asignados);  // <-- SOLO AQUÍ LO LLAMÁS
+                mostrarEquipoContent(asignados);  
             }
-           // <-- NO llamás a mostrarEquipoContent(), por eso el ScrollPane queda vacío
+           btn_finCaso.setVisible(asignados.contains(ci)); 
+           
+           if(!datosCaso.isActivo()){
+               btn_cargarOrienta.setDisable(true);
+               txt_estado.setText("Inactivo");
+           } else{
+               btn_finCaso.setText("Finalizar caso");
+               btn_cargarOrienta.setDisable(false);
+               txt_estado.setText("Activo");
+           }
+           btn_cargarOrienta.setVisible(asignados.contains(ci)); 
+            
+            
+            
         }
+        
 
 
         // TODO
@@ -184,7 +204,7 @@ public class AbrirCasoController implements Initializable {
 
     @FXML
     private void volver(ActionEvent event) {
-        ControladorUtils.cambiarVista(datosCaso.getFxmlAnterior());
+        ControladorUtils.cambiarVista(CasoSeleccionado.getInstancia().getFxmlAnterior());
     }
 
     @FXML
@@ -229,11 +249,40 @@ public class AbrirCasoController implements Initializable {
     }
 
     @FXML
-    private void finCaso(ActionEvent event) {
+    private void finCaso(ActionEvent event) throws SQLException {
+        if(datosCaso.isActivo()){
+          boolean existeOrientacion = orientaDao.existeUnaOrientacion(ci); 
+            if(existeOrientacion){
+                if(ControladorUtils.mostrarConfirmacion("Finalizar caso", "¿Desea finalizar el caso?"+
+                        "Recuerde que ya no podrá cargar orientaciones si cierra el caso.")){
+                    orientaDao.finalizarCaso(idCaso); 
+                    btn_cargarOrienta.setDisable(true);
+                    datosCaso.setActivo(false);
+                    btn_finCaso.setText("Reactivar caso");
+                } 
+                
+            }else{
+                    ControladorUtils.mostrarAlerta("Informamos", "No puede finalizar un caso sin haber escrito al menos una orientación");
+                }
+                
+              
+        } else{
+            if(ControladorUtils.mostrarConfirmacion("Reactivar caso", "¿Desea reactivar el caso?")){
+                    orientaDao.reactivarCaso(idCaso); 
+                    btn_cargarOrienta.setDisable(false);
+                    datosCaso.setActivo(true);
+                    btn_finCaso.setText("Finalizar caso");
+                }
+        }
+              
+        
     }
 
     @FXML
     private void cargarOrienta(ActionEvent event) {
+        ControladorUtils.cambiarVista("writeOrientacion");
+        Orientacion.getInstancia().setFxmlAnterior("abrirCaso");
+        
     }
 
 }

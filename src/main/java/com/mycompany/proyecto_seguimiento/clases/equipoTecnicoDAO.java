@@ -6,7 +6,6 @@ package com.mycompany.proyecto_seguimiento.clases;
 
 import com.mycompany.proyecto_seguimiento.modelo.CasoResumen;
 import com.mycompany.proyecto_seguimiento.modelo.equipoTecnico;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +28,7 @@ public class equipoTecnicoDAO {
     
     public List<CasoResumen> obtenerCasosSinEquipo() {
         List<CasoResumen> casos = new ArrayList<>();
-        String sql = "SELECT id_caso, fecha, estudiante_nombre, especialidad, curso "
+        String sql = "SELECT id_caso, fecha, estudiante_nombre, especialidad, curso, activo "
                    + "FROM casos_sin_equipo";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql); 
@@ -46,6 +45,7 @@ public class equipoTecnicoDAO {
                 cr.setEstudiante(rs.getString("estudiante_nombre"));
                 cr.setEspecialidad(rs.getString("especialidad"));
                 cr.setCurso(rs.getString("curso"));
+                cr.setActivo(rs.getBoolean("activo"));
 
                 casos.add(cr);
             }
@@ -138,5 +138,9 @@ public class equipoTecnicoDAO {
 
         return lista;
     }
+    
+
+   
+
 
 }

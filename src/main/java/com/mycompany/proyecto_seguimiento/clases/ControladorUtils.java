@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -23,8 +24,10 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ControladorUtils {
     // Para uso directo con nodos contenedores
@@ -43,7 +46,29 @@ public class ControladorUtils {
         }
     }
 
-
+    public static void cargarVistaStackPane(String fxmlName, StackPane contenedor) {
+    try {
+        Parent nuevaVista = FXMLLoader.load(App.class.getResource(fxmlName));
+        
+        // Configurar animación de fundido
+        nuevaVista.setOpacity(0);
+        contenedor.getChildren().add(nuevaVista);
+        
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), nuevaVista);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.setOnFinished(e -> {
+            // Remover la vista anterior después de la animación
+            if (contenedor.getChildren().size() > 1) {
+                contenedor.getChildren().remove(0);
+            }
+        });
+        fadeIn.play();
+        
+    } catch (IOException e) {
+        mostrarError("Error", "No se pudo cargar la vista: " + fxmlName, e);
+    }
+}
     public static void abrirModal(String fxmlNombre, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(ControladorUtils.class.getResource("/com/mycompany/proyecto_seguimiento/" + fxmlNombre + ".fxml"));

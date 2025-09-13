@@ -176,7 +176,7 @@ public class EquipoTecnico3Controller implements Initializable {
         cs.setCurso(seleccionado.getCurso());
         cs.setEspecialidad(seleccionado.getEspecialidad());
         cs.setFxmlAnterior("equipoTecnico");
-
+        cs.setActivo(seleccionado.isActivo());
         casoDAO.cargarDetalleCaso(seleccionado.getId_caso());
         ControladorUtils.cambiarVista("AbrirCaso");
     }
