@@ -4,7 +4,6 @@
  */
 package com.mycompany.proyecto_seguimiento;
 
-import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -15,51 +14,51 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
  *
  * @author natha
  */
-public class EquipoTecnico2Controller implements Initializable {
+public class ReadOrientaController implements Initializable {
 
     @FXML
-    private Button btn_volver;
+    private TextField txt_buscar;
     @FXML
-    private Button btn_Orientaciones;
+    private TableView<?> tabla_casos;
     @FXML
-    private StackPane contenedor;
+    private TableColumn<?, ?> col_idOrienta;
     @FXML
-    private Button btn_myOrienta;
+    private TableColumn<?, ?> col_fecha;
+    @FXML
+    private TableColumn<?, ?> col_estudiante;
+    @FXML
+    private TableColumn<?, ?> col_espe;
+    @FXML
+    private TableColumn<?, ?> col_curso;
+    @FXML
+    private TableColumn<?, ?> col_idCaso;
+    @FXML
+    private Button btn_abrirCaso;
+    @FXML
+    private TableColumn<?, ?> col_autor;
+    @FXML
+    private TableColumn<?, ?> col_seleccionar;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ControladorUtils.cargarVistaStackPane("ReadOrienta.fxml", contenedor);
         // TODO
     }    
 
     @FXML
-    private void volver(ActionEvent event) {
-        ControladorUtils.cambiarVista("equipoTecnico");
-    }
-
-    
-
-    @FXML
-    private void abrirOrientaciones(ActionEvent event) {
-        ControladorUtils.cargarVistaStackPane("ReadOrienta.fxml", contenedor);
-        
+    private void buscar(KeyEvent event) {
     }
 
     @FXML
-    private void abrirMisOrienta(ActionEvent event) {
-        
+    private void abrirCaso(ActionEvent event) {
     }
-
-    
     
 }

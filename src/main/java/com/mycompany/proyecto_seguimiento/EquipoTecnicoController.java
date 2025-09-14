@@ -20,8 +20,6 @@ import javafx.scene.text.Text;
 public class EquipoTecnicoController implements Initializable {
 
     @FXML
-    private Button btn_orientacion;
-    @FXML
     private Button btn_configCuenta;
     @FXML
     private Button btn_logout;
@@ -29,8 +27,6 @@ public class EquipoTecnicoController implements Initializable {
     private Button btn_asignar;
     @FXML
     private Button btn_CASOS;
-    @FXML
-    private Button btn_asignados;
     @FXML
     private Text txt_nombre;
     @FXML
@@ -41,6 +37,8 @@ public class EquipoTecnicoController implements Initializable {
     private final conexion dbConexion = new conexion();
     
     private final equipoTecnicoDAO equipoTecDAO = new equipoTecnicoDAO(dbConexion.getConnection());
+    @FXML
+    private Button btn_ORIENTA;
     
 
     @Override
@@ -73,7 +71,6 @@ public class EquipoTecnicoController implements Initializable {
 
     @FXML
     private void configurarCuenta(ActionEvent event) {
-        
         ControladorUtils.cambiarVista("configurarCuenta");
     }
 
@@ -87,18 +84,16 @@ public class EquipoTecnicoController implements Initializable {
         ControladorUtils.cambiarVista("equipoTecnico1");
     }
 
+   
+
     @FXML
-    private void todo_caso(ActionEvent event) {
+    private void abrirOrientaciones(ActionEvent event) {
         ControladorUtils.cambiarVista("equipoTecnico2");
+        
     }
 
     @FXML
-    private void casosAsignados(ActionEvent event) {
-        ControladorUtils.cambiarVista("equipoTecnico3");
-    }
-
-    @FXML
-    private void orientaciones(ActionEvent event) {
+    private void abrirCasos(ActionEvent event) {
         ControladorUtils.cambiarVista("equipoTecnico4");
     }
 }

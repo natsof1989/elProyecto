@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -138,7 +139,47 @@ public class equipoTecnicoDAO {
 
         return lista;
     }
-    
+    public List<CasoResumen> obtenerTodosLosCasosConDepartamentos() throws SQLException {
+    List<CasoResumen> lista = new ArrayList<>();
+
+    // Agrupamos por caso para que los departamentos queden en una lista
+    String sql = "SELECT id_caso, fecha, estudiante, especialidad, curso, activo, " +
+                 "GROUP_CONCAT(DISTINCT departamento SEPARATOR ', ') AS departamentos " +
+                 "FROM v_casos_equipo_tecnico " +
+                 "GROUP BY id_caso, fecha, estudiante, especialidad, curso, activo";
+
+    try (PreparedStatement ps = conexion.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            CasoResumen caso = new CasoResumen();
+            caso.setId_caso(rs.getInt("id_caso"));
+
+            Timestamp ts = rs.getTimestamp("fecha");
+            if (ts != null) {
+                caso.setFecha(ts.toLocalDateTime());
+            }
+
+            caso.setEstudiante(rs.getString("estudiante"));
+            caso.setEspecialidad(rs.getString("especialidad"));
+            caso.setCurso(rs.getString("curso"));
+            caso.setActivo(rs.getBoolean("activo"));
+
+            // Convertimos la cadena de departamentos en lista
+            String deps = rs.getString("departamentos");
+            List<String> listaDeps = new ArrayList<>();
+            if (deps != null && !deps.isEmpty()) {
+                listaDeps.addAll(Arrays.asList(deps.split(",\\s*")));
+            }
+            caso.setDepartamentos((ArrayList<String>) listaDeps);
+
+            lista.add(caso);
+        }
+    }
+
+    return lista;
+}
+
 
    
 

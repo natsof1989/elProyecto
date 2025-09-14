@@ -11,14 +11,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="645.0" prefWidth="907.0" spacing="20.0" styleClass="root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.AbrirCasoController">
    <children>
-      <VBox blendMode="LIGHTEN" prefHeight="585.0" prefWidth="198.0" spacing="10.0" style="-fx-background-color: white;" styleClass="contenedor-botones">
+      <VBox blendMode="LIGHTEN" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="214.0" spacing="10.0" style="-fx-background-color: white;" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
             <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="38.0" prefWidth="240.0" styleClass="boton-nuevo" text="Salir">
                <font>
@@ -44,7 +43,7 @@
                         <ScrollPane fx:id="scroll_equipo" prefHeight="233.0" prefWidth="145.0" />
                      </content>
                   </TitledPane>
-                <TitledPane fx:id="opcionesET" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="0.0" prefWidth="211.0" styleClass="titled-pane-celeste" text="Opciones equipo técnico">
+                <TitledPane fx:id="opcionesET" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="211.0" styleClass="titled-pane-celeste" text="Opciones equipo técnico">
                      <content>
                         <VBox prefHeight="225.0" prefWidth="199.0" spacing="10.0">
                            <children>
@@ -74,78 +73,62 @@
             <Insets left="10.0" />
          </padding>
       </VBox>
-      <StackPane prefHeight="587.0" prefWidth="567.0">
+      <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="574.0" prefWidth="567.0" styleClass="panel-contenedor" HBox.hgrow="ALWAYS">
          <children>
-            <VBox prefHeight="574.0" prefWidth="567.0" styleClass="panel-contenedor">
+            <Text fx:id="txt_idCaso" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titulo-principal" text="Caso: ???" wrappingWidth="104.13671875" />
+            <GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="74.0" prefWidth="537.0" VBox.vgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="96.0" minWidth="10.0" prefWidth="84.0" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="97.0" minWidth="10.0" prefWidth="49.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="132.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                  <RowConstraints />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <GridPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="38.0" prefWidth="523.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="257.0" minWidth="10.0" prefWidth="242.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="325.0" minWidth="10.0" prefWidth="284.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titulo-principal" text="Caso:" textAlignment="RIGHT" wrappingWidth="67.625" />
-                        <Text fx:id="txt_idCaso" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titulo-principal" wrappingWidth="75.13671875" GridPane.columnIndex="1" />
-                     </children>
-                  </GridPane>
-                  <GridPane prefHeight="74.0" prefWidth="537.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="10.0" prefWidth="84.0" />
-                      <ColumnConstraints hgrow="ALWAYS" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
-                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="97.0" minWidth="10.0" prefWidth="49.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="132.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                        <RowConstraints />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Especialidad:" wrappingWidth="80.982421875" GridPane.rowIndex="2" />
-                        <Text fx:id="txt_espe" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="195.13671875" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Curso:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Text fx:id="txt_curso" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="67.13671875" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Fecha:" wrappingWidth="79.17578125" GridPane.rowIndex="3" />
-                        <Text fx:id="txt_fecha" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="138.13671875" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Estudiante:" textAlignment="RIGHT" wrappingWidth="67.470703125" GridPane.rowIndex="1" />
-                        <Text fx:id="txt_estudiante" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="297.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estado:" wrappingWidth="44.033203125" />
-                        <Text fx:id="txt_estado" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="86.13671875" GridPane.columnIndex="1" />
-                     </children>
-                  </GridPane>
-                  <Label styleClass="subtitulo" text="Descripción del caso: " />
-                  <TextArea fx:id="txt_descripcion" disable="true" prefHeight="259.0" prefWidth="526.0" style="-fx-border-color: black; -fx-text-fill: black;" wrapText="true">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </TextArea>
-                  <Label styleClass="subtitulo" text="Información del docente:" />
-                  <GridPane prefHeight="54.0" prefWidth="370.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="242.0" minWidth="10.0" prefWidth="61.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="432.0" minWidth="10.0" prefWidth="293.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Docente:" wrappingWidth="60.17578125" />
-                        <Text fx:id="txt_profe" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="261.13671875" GridPane.columnIndex="1" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="CI: " wrappingWidth="50.17578125" GridPane.rowIndex="1" />
-                        <Text fx:id="txt_CI" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="267.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Especialidad:" wrappingWidth="80.982421875" GridPane.rowIndex="2" />
+                  <Text fx:id="txt_espe" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="195.13671875" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Curso:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Text fx:id="txt_curso" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="67.13671875" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Fecha:" wrappingWidth="79.17578125" GridPane.rowIndex="3" />
+                  <Text fx:id="txt_fecha" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="138.13671875" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Estudiante:" textAlignment="RIGHT" wrappingWidth="67.470703125" GridPane.rowIndex="1" />
+                  <Text fx:id="txt_estudiante" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="297.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estado:" wrappingWidth="44.033203125" />
+                  <Text fx:id="txt_estado" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="86.13671875" GridPane.columnIndex="1" />
                </children>
-            </VBox>
+            </GridPane>
+            <Label styleClass="subtitulo" text="Descripción del caso: " />
+            <TextArea fx:id="txt_descripcion" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="259.0" prefWidth="526.0" style="-fx-border-color: black; -fx-text-fill: black;" wrapText="true" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </TextArea>
+            <Label styleClass="subtitulo" text="Información del docente:" />
+            <GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="370.0" VBox.vgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="242.0" minWidth="10.0" prefWidth="61.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="432.0" minWidth="10.0" prefWidth="293.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Docente:" wrappingWidth="60.17578125" />
+                  <Text fx:id="txt_profe" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="261.13671875" GridPane.columnIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="CI: " wrappingWidth="50.17578125" GridPane.rowIndex="1" />
+                  <Text fx:id="txt_CI" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" wrappingWidth="267.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
          </children>
-      </StackPane>
+      </VBox>
    </children>
    <padding>
-      <Insets bottom="30.0" left="30.0" right="40.0" top="30.0" />
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
    </padding>
 </HBox>

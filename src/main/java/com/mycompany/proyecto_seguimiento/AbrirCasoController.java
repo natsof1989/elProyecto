@@ -110,7 +110,7 @@ public class AbrirCasoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        txt_idCaso.setText(String.valueOf(idCaso)); 
+        txt_idCaso.setText("Caso: " + String.valueOf(idCaso)); 
         txt_estudiante.setText(datosCaso.getEstudiante());
         txt_espe.setText(datosCaso.getEspecialidad());
         txt_curso.setText(datosCaso.getCurso());
@@ -140,7 +140,7 @@ public class AbrirCasoController implements Initializable {
             asignados = equipoTecDAO.obtenerAsignados(idCaso); 
             
             if(asignados!=null){
-                CasoSeleccionado.getInstancia().setAsignados(asignados);
+                datosCaso.setAsignados(asignados);
             }
             
             jefa_content.setVisible(jefa);
@@ -149,7 +149,7 @@ public class AbrirCasoController implements Initializable {
             Logger.getLogger(AbrirCasoController.class.getName()).log(Level.SEVERE, null, ex);
         }
           
-        String fxml = CasoSeleccionado.getInstancia().getFxmlAnterior(); 
+        String fxml = datosCaso.getFxmlAnterior(); 
         
         if ("teacher1".equals(fxml) || "teacher2".equals(fxml)) {
             equipoT_content.setVisible(false);
@@ -204,7 +204,8 @@ public class AbrirCasoController implements Initializable {
 
     @FXML
     private void volver(ActionEvent event) {
-        ControladorUtils.cambiarVista(CasoSeleccionado.getInstancia().getFxmlAnterior());
+        
+        ControladorUtils.cambiarVista(datosCaso.getFxmlAnterior());
     }
 
     @FXML
@@ -246,6 +247,7 @@ public class AbrirCasoController implements Initializable {
 
     @FXML
     private void hisOrientacion(ActionEvent event) {
+        
     }
 
     @FXML

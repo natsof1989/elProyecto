@@ -10,10 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<HBox alignment="CENTER" prefHeight="539.0" prefWidth="494.0" spacing="20.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.EquipoTecnicoController">
+<HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="539.0" prefWidth="494.0" spacing="20.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.EquipoTecnicoController">
    <children>
-      <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="485.0" prefWidth="448.0" styleClass="panel-contenedor" HBox.hgrow="NEVER">
+      <VBox alignment="TOP_CENTER" prefHeight="485.0" prefWidth="448.0" styleClass="panel-contenedor" HBox.hgrow="ALWAYS">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="29.0" prefWidth="483.0" styleClass="titulo-principal" text="Bienvenido" VBox.vgrow="ALWAYS" />
             <GridPane alignment="CENTER" prefHeight="96.0" prefWidth="401.0">
@@ -28,18 +27,17 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="82.0" styleClass="subtitulo" text="Nombre:" GridPane.rowIndex="1" />
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="82.0" styleClass="subtitulo" text="Apellido:" GridPane.rowIndex="2" />
-                  <Text fx:id="txt_nombre" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Sofia Nathalia" wrappingWidth="287.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Text fx:id="txt_apellido" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Acosta Figueredo" wrappingWidth="275.13671875" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="90.0" styleClass="subtitulo" text="Nombre:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="92.0" styleClass="subtitulo" text="Apellido:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                  <Text fx:id="txt_nombre" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Sofia Nathalia" wrappingWidth="287.13671875" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                  <Text fx:id="txt_apellido" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Acosta Figueredo" wrappingWidth="275.13671875" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <VBox alignment="CENTER" prefHeight="350.0" prefWidth="444.0" spacing="10.0" VBox.vgrow="ALWAYS">
                <children>
                   <Button fx:id="btn_asignar" mnemonicParsing="false" onAction="#asignarCaso" prefHeight="38.0" prefWidth="186.0" styleClass="boton-azul" text="Asignar caso" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="btn_CASOS" mnemonicParsing="false" onAction="#todo_caso" prefHeight="38.0" prefWidth="184.0" styleClass="boton-azul" text="Todos los casos" />
-                  <Button fx:id="btn_asignados" alignment="CENTER" mnemonicParsing="false" onAction="#casosAsignados" prefHeight="38.0" prefWidth="185.0" styleClass="boton-azul" text="Casos asignados" />
-                  <Button fx:id="btn_orientacion" mnemonicParsing="false" onAction="#orientaciones" prefHeight="38.0" prefWidth="182.0" styleClass="boton-azul" text="Mis orientaciones" />
+                  <Button fx:id="btn_ORIENTA" mnemonicParsing="false" onAction="#abrirOrientaciones" prefHeight="38.0" prefWidth="184.0" styleClass="boton-azul" text="Orientaciones" />
+                  <Button fx:id="btn_CASOS" alignment="CENTER" mnemonicParsing="false" onAction="#abrirCasos" prefHeight="38.0" prefWidth="185.0" styleClass="boton-azul" text="Casos" />
                   <Button fx:id="btn_configCuenta" mnemonicParsing="false" onAction="#configurarCuenta" prefHeight="38.0" prefWidth="186.0" styleClass="boton-azul" text="Configurar cuenta" />
                   <Button fx:id="btn_logout" mnemonicParsing="false" onAction="#cerrarSesion" prefHeight="38.0" prefWidth="189.0" styleClass="boton-azul" text="Cerrar sesión" />
                </children>

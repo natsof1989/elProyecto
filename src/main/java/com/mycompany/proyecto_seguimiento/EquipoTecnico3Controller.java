@@ -40,8 +40,6 @@ import javafx.scene.input.KeyEvent;
 public class EquipoTecnico3Controller implements Initializable {
 
     @FXML
-    private Button btn_volver;
-    @FXML
     private TableView<CasoResumen> tabla_casos;
     @FXML
     private TableColumn<CasoResumen, Integer> col_idCaso;
@@ -126,7 +124,6 @@ public class EquipoTecnico3Controller implements Initializable {
         registros = FXCollections.observableArrayList(equipoTecDao.obtenerCasosAsignados(ci_equipo));
         tabla_casos.setItems(registros);
     }
-    @FXML
     private void volver(ActionEvent event) {
         ControladorUtils.cambiarVista("equipoTecnico");
     }
@@ -175,7 +172,7 @@ public class EquipoTecnico3Controller implements Initializable {
         cs.setEstudiante(seleccionado.getEstudiante());
         cs.setCurso(seleccionado.getCurso());
         cs.setEspecialidad(seleccionado.getEspecialidad());
-        cs.setFxmlAnterior("equipoTecnico");
+        cs.setFxmlAnterior("equipoTecnico4");
         cs.setActivo(seleccionado.isActivo());
         casoDAO.cargarDetalleCaso(seleccionado.getId_caso());
         ControladorUtils.cambiarVista("AbrirCaso");

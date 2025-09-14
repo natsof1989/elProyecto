@@ -5,6 +5,7 @@
 package com.mycompany.proyecto_seguimiento.modelo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +18,8 @@ public class CasoResumen {
     private String especialidad;
     private String curso;
     private boolean activo; 
+    private ArrayList<String> departamentos = new ArrayList<>(); 
+
 
     public CasoResumen() {
     }
@@ -85,6 +88,16 @@ public class CasoResumen {
     public String getCurso() {
         return curso;
     }
+
+    public ArrayList<String> getDepartamentos() {
+        return departamentos;
+    }
+
+    public void setDepartamentos(ArrayList<String> departamentos) {
+        this.departamentos = departamentos;
+    }
+
+   
 
     public void setCurso(String curso) {
         this.curso = curso;
