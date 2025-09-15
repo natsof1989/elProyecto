@@ -4,12 +4,14 @@
  */
 package com.mycompany.proyecto_seguimiento.clases;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 
 /**
  *
@@ -53,25 +55,35 @@ public class OrientacionDAO {
         }
     }
     
-   public int insertarOrientacion(String descripcion, int idCaso) throws SQLException {
-        String sql = "INSERT INTO orientacion (observaciones, fecha, id_caso) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            Timestamp fecha = new Timestamp(System.currentTimeMillis());
-            ps.setString(1, descripcion);
-            ps.setTimestamp(2, fecha);
-            ps.setInt(3, idCaso);
+   public int insertarOrientacion(String descripcion, int idCaso, int ciEquipo) throws SQLException {
+        int codOrientacion = -1;
+        boolean exito = false;
 
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        return rs.getInt(1); // devuelve el cod_orientacion generado
-                    }
-                }
+        String sql = "{CALL insertar_orientacion_con_detalle(?, ?, ?, ?, ?, ?)}";
+
+        try (CallableStatement cs = conexion.prepareCall(sql)) {
+            // Parámetros de entrada
+            cs.setString(1, descripcion);
+            cs.setInt(2, idCaso);
+            cs.setInt(3, ciEquipo);
+            cs.setTimestamp(4, new Timestamp(System.currentTimeMillis())); // fecha actual
+
+            // Parámetros de salida
+            cs.registerOutParameter(5, Types.INTEGER); // p_cod_orientacion
+            cs.registerOutParameter(6, Types.BOOLEAN); // p_exito
+
+            // Ejecutar procedimiento
+            cs.execute();
+
+            exito = cs.getBoolean(6);
+            if (exito) {
+                codOrientacion = cs.getInt(5);
             }
         }
-        return -1; 
+
+        return codOrientacion;
     }
+    
    public Timestamp getFechaOrientacion(int codOrientacion) throws SQLException {
         String sql = "SELECT fecha FROM orientacion WHERE cod_orientacion = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {

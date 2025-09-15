@@ -167,6 +167,7 @@ public class AbrirCasoController implements Initializable {
            if(!datosCaso.isActivo()){
                btn_cargarOrienta.setDisable(true);
                txt_estado.setText("Inactivo");
+               btn_finCaso.setText("Reactivar caso");
            } else{
                btn_finCaso.setText("Finalizar caso");
                btn_cargarOrienta.setDisable(false);

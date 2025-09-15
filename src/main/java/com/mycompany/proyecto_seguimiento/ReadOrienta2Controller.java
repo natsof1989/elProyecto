@@ -1,22 +1,8 @@
 package com.mycompany.proyecto_seguimiento;
 
-import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionSelected;
 import com.mycompany.proyecto_seguimiento.modelo.OrientacionResumen;
-import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
-import com.mycompany.proyecto_seguimiento.clases.conexion;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
-
 import java.net.URL;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -24,10 +10,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Collectors;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
-public class ReadOrientaController implements Initializable {
+public class ReadOrienta2Controller implements Initializable {
 
     @FXML
     private TextField txt_buscar;
@@ -49,27 +48,19 @@ public class ReadOrientaController implements Initializable {
     private TableColumn<OrientacionResumen, Integer> col_idCaso;
     @FXML
     private TableColumn<OrientacionResumen, Boolean> col_seleccionar;
-    
-    
-            
-    private final conexion dbConexion = new conexion();
-    private final equipoTecnicoDAO equipoTecDao = new equipoTecnicoDAO(dbConexion.getConnection());
-
-    private ObservableList<OrientacionResumen> registros = FXCollections.observableArrayList();
-    private ObservableList<OrientacionResumen> registrosFiltrados = FXCollections.observableArrayList();
-
-    private Set<OrientacionResumen> seleccionados = new HashSet<>();
     @FXML
     private Button btn_informe;
 
+    private ObservableList<OrientacionResumen> registros = FXCollections.observableArrayList();
+    private ObservableList<OrientacionResumen> registrosFiltrados = FXCollections.observableArrayList();
+    private Set<OrientacionResumen> seleccionados = new HashSet<>();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // 1. Cargar todas las orientaciones
-        try {
-            registros.setAll(equipoTecDao.obtenerOrientaciones());
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        // 1. Obtener la lista de orientaciones del singleton
+        List<OrientacionResumen> orientacionesDelAutor = OrientacionSelected.getInstancia().getOrientaciones();
+
+        registros.setAll(orientacionesDelAutor);
 
         // 2. Configurar columnas
         col_idOrienta.setCellValueFactory(new PropertyValueFactory<>("cod_orientacion"));
@@ -81,7 +72,8 @@ public class ReadOrientaController implements Initializable {
             @Override
             protected void updateItem(Timestamp item, boolean empty) {
                 super.updateItem(item, empty);
-                setText((empty || item == null) ? null : sdf.format(item));
+                if (empty || item == null) setText(null);
+                else setText(sdf.format(item));
             }
         });
 
@@ -104,65 +96,41 @@ public class ReadOrientaController implements Initializable {
                     }
                 });
             }
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setGraphic(null);
-                } else {
-                    OrientacionResumen ori = getTableRow().getItem();
-                    check.setSelected(seleccionados.contains(ori));
-                    setGraphic(check);
-                }
+        @Override
+        protected void updateItem(Boolean item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                setGraphic(null);
+            } else {
+                OrientacionResumen ori = getTableRow().getItem();
+                check.setSelected(seleccionados.contains(ori));
+                setGraphic(check);
             }
-        });
+        }
+    });
 
-        // 4. Guardar en singleton solo las orientaciones del autor de la sesión
-        String autorSesion = SessionManager.getInstance().getUsuarioDatos().getNombre() + 
-                             " " + SessionManager.getInstance().getUsuarioDatos().getApellido();
+    // 4. Inicializar TableView con datos del singleton
+    registrosFiltrados.setAll(registros);
+    tabla_casos.setItems(registrosFiltrados);
 
-        List<OrientacionResumen> orientacionesDelAutor = registros.stream()
-                .filter(o -> o.getAutor() != null && o.getAutor().equalsIgnoreCase(autorSesion.trim()))
-                .collect(Collectors.toList());
-
-        OrientacionSelected.getInstancia().setOrientaciones(orientacionesDelAutor);
-
-        // 5. Inicializar TableView con todas las orientaciones
-        registrosFiltrados.setAll(registros);
-        tabla_casos.setItems(registrosFiltrados);
-
-        // 6. Inicializar botón
-        btn_informe.setDisable(true);
-    }
+    btn_informe.setDisable(true);
+}
 
 
     private void actualizarBoton() {
         btn_informe.setDisable(seleccionados.isEmpty());
     }
 
-   
-
-   @FXML
+    @FXML
     private void buscar(KeyEvent event) {
         String busqueda = txt_buscar.getText().toLowerCase().trim();
-
-        if (registros == null) return; // Evita NullPointer si aún no hay datos
-
-        ObservableList<OrientacionResumen> registrosFiltrados = FXCollections.observableArrayList();
+        registrosFiltrados.clear();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         for (OrientacionResumen ori : registros) {
-            // Convertir Timestamp a String legible
-            String fechaStr = "";
-            if (ori.getFecha() != null) {
-                fechaStr = ori.getFecha()
-                              .toLocalDateTime()  // de Timestamp a LocalDateTime
-                              .format(formatter)
-                              .toLowerCase();
-            }
-
+            String fechaStr = (ori.getFecha() != null) ? ori.getFecha().toLocalDateTime().format(formatter).toLowerCase() : "";
             String estudiante = (ori.getEstudiante() != null) ? ori.getEstudiante().toLowerCase() : "";
-            String especialidad = (ori.getEspecialidad() != null) ? ori.getEspecialidad().toLowerCase() : "";
+            String espe = (ori.getEspecialidad() != null) ? ori.getEspecialidad().toLowerCase() : "";
             String curso = (ori.getCurso() != null) ? ori.getCurso().toLowerCase() : "";
             String autor = (ori.getAutor() != null) ? ori.getAutor().toLowerCase() : "";
             String idCaso = String.valueOf(ori.getId_caso());
@@ -170,7 +138,7 @@ public class ReadOrientaController implements Initializable {
 
             if (busqueda.isEmpty()
                     || estudiante.contains(busqueda)
-                    || especialidad.contains(busqueda)
+                    || espe.contains(busqueda)
                     || curso.contains(busqueda)
                     || autor.contains(busqueda)
                     || fechaStr.contains(busqueda)
@@ -181,23 +149,23 @@ public class ReadOrientaController implements Initializable {
         }
 
         tabla_casos.setItems(registrosFiltrados);
+        seleccionados.clear();
+        actualizarBoton();
     }
-
-
-    
 
     @FXML
     private void generarInforme(ActionEvent event) {
         if (seleccionados.isEmpty()) return;
-
-        // Aquí tu lógica: generar informe de las seleccionadas (o lo que quieras hacer)
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Generar informe para " + seleccionados.size() + " orientaciones.");
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.INFORMATION,
+                "Generar informe para " + seleccionados.size() + " orientaciones."
+        );
         alert.showAndWait();
-        // Ejemplo: JasperReportUtils.generarInformeOrientaciones(seleccionados);
     }
+
     @FXML
     private void mostrarFila(MouseEvent event) {
         btn_informe.setDisable(tabla_casos.getSelectionModel().getSelectedItem() == null);
-
+        
     }
 }

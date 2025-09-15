@@ -30,6 +30,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class ReadCasosController implements Initializable {
 
@@ -161,33 +162,66 @@ public class ReadCasosController implements Initializable {
         btn_abrirCaso.setDisable(sel != 1);
     }
 
+   
+
+    
     @FXML
     private void buscar(KeyEvent event) {
-        String filtro = txt_buscar.getText().toLowerCase().trim();
-        if (filtro.isEmpty()) {
-            registrosFiltrados.setAll(registros);
-        } else {
-            registrosFiltrados.setAll(
-                registros.stream()
-                    .filter(caso ->
-                        String.valueOf(caso.getId_caso()).contains(filtro) ||
-                        (caso.getEstudiante() != null && caso.getEstudiante().toLowerCase().contains(filtro)) ||
-                        (caso.getEspecialidad() != null && caso.getEspecialidad().toLowerCase().contains(filtro)) ||
-                        (caso.getCurso() != null && caso.getCurso().toLowerCase().contains(filtro)) ||
-                        (caso.getDepartamentos() != null && caso.getDepartamentos().stream().anyMatch(dep -> dep.toLowerCase().contains(filtro)))
-                    )
-                    .collect(Collectors.toList())
-            );
+        String busqueda = txt_buscar.getText().toLowerCase().trim();
+
+        if (registros == null) return; // Evita NullPointer si aún no hay datos
+
+        ObservableList<CasoResumen> registrosFiltrados = FXCollections.observableArrayList();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        for (CasoResumen caso : registros) {
+            // Fecha como String (segura con null-check)
+            
+
+            String fechaStr = (caso.getFecha() != null) 
+            ? caso.getFecha().format(formatter).toLowerCase()
+            : "";
+            String estudiante   = (caso.getEstudiante() != null)   ? caso.getEstudiante().toLowerCase()   : "";
+            String especialidad = (caso.getEspecialidad() != null) ? caso.getEspecialidad().toLowerCase() : "";
+            String curso        = (caso.getCurso() != null)        ? caso.getCurso().toLowerCase()        : "";
+
+            // Unir departamentos en un solo string
+            String departamentos = (caso.getDepartamentos() != null) 
+                    ? String.join(", ", caso.getDepartamentos()).toLowerCase()
+                    : "";
+
+            String idCaso = String.valueOf(caso.getId_caso());
+
+            // Condiciones de filtrado
+            if (busqueda.isEmpty()
+                    || estudiante.contains(busqueda)
+                    || especialidad.contains(busqueda)
+                    || curso.contains(busqueda)
+                    || departamentos.contains(busqueda)
+                    || fechaStr.contains(busqueda)
+                    || idCaso.contains(busqueda)) {
+
+                registrosFiltrados.add(caso);
+            }
         }
-        seleccionados.clear(); // Limpiar selección al buscar
-        tabla_casos.refresh();
-        actualizarBotones();
+
+        tabla_casos.setItems(registrosFiltrados);
     }
+
 
     @FXML
     private void abrirCaso(ActionEvent event) {
-        if (seleccionados.size() != 1) return;
-        CasoResumen seleccionado = seleccionados.iterator().next();
+        CasoResumen seleccionado;
+
+        if (!seleccionados.isEmpty()) {
+            // Prioridad al checkbox
+            seleccionado = seleccionados.iterator().next();
+        } else {
+            // Tomar fila seleccionada
+            seleccionado = tabla_casos.getSelectionModel().getSelectedItem();
+        }
+
+        if (seleccionado == null) return; // nada seleccionado
 
         CasoSeleccionado cs = CasoSeleccionado.getInstancia();
         cs.setIdCaso(seleccionado.getId_caso());
@@ -198,8 +232,9 @@ public class ReadCasosController implements Initializable {
         cs.setFxmlAnterior("equipoTecnico4");
         cs.setActivo(seleccionado.isActivo());
         casoDAO.cargarDetalleCaso(seleccionado.getId_caso());
-        ControladorUtils.cambiarVista("AbrirCaso");
+        ControladorUtils.cambiarVista("abrirCaso");
     }
+
 
     @FXML
     private void generarInforme(ActionEvent event) {
@@ -214,6 +249,13 @@ public class ReadCasosController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Informe generado para " + seleccionados.size() + " casos (aquí iría Jasper).");
         alert.showAndWait();
+    }
+
+    @FXML
+    private void mostrarFila(MouseEvent event) {
+        btn_abrirCaso.setDisable(tabla_casos.getSelectionModel().getSelectedItem() == null);
+        btn_informe.setDisable(tabla_casos.getSelectionModel().getSelectedItem() == null);
+        
     }
 
 }

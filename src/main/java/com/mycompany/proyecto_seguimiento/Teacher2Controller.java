@@ -41,6 +41,8 @@ public class Teacher2Controller implements Initializable {
     @FXML
     private TableColumn<CasoResumen, String> col_curso;
     @FXML
+    private TableColumn<CasoResumen, Boolean> col_seleccion;
+    @FXML
     private TextField txt_buscar;
     @FXML
     private Button btn_abrir;
@@ -54,6 +56,9 @@ public class Teacher2Controller implements Initializable {
 
     private final CasoDAO casoDAO = new CasoDAO(dbConexion.getConnection()); 
     private ObservableList<CasoResumen> registros; // Lista completa de casos
+    @FXML
+    private Button btn_informe;
+    
 
     @Override
    public void initialize(URL url, ResourceBundle rb) {
@@ -147,5 +152,9 @@ public class Teacher2Controller implements Initializable {
             ControladorUtils.cambiarVista("AbrirCaso"); 
         }
 
+    }
+
+    @FXML
+    private void generarInforme(ActionEvent event) {
     }
 }

@@ -57,6 +57,7 @@ public class EquipoTecnico2Controller implements Initializable {
 
     @FXML
     private void abrirMisOrienta(ActionEvent event) {
+        ControladorUtils.cargarVistaStackPane("ReadOrienta2.fxml", contenedor);
         
     }
 

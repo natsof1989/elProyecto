@@ -12,6 +12,7 @@ import java.sql.Timestamp;
  */
 public class OrientacionResumen {
     private int cod_orientacion; 
+    private String Autor; 
     private Timestamp fecha; 
     private String estudiante; 
     private String especialidad; 
@@ -23,8 +24,9 @@ public class OrientacionResumen {
     
     
 
-    public OrientacionResumen(int cod_orientacion, Timestamp fecha, String estudiante, String especialidad, String curso, int id_caso) {
+    public OrientacionResumen(int cod_orientacion, String autor, Timestamp fecha, String estudiante, String especialidad, String curso, int id_caso) {
         this.cod_orientacion = cod_orientacion;
+        this.Autor = autor; 
         this.fecha = fecha;
         this.estudiante = estudiante;
         this.especialidad = especialidad;
@@ -78,6 +80,14 @@ public class OrientacionResumen {
 
     public void setId_caso(int id_caso) {
         this.id_caso = id_caso;
+    }
+
+    public String getAutor() {
+        return Autor;
+    }
+
+    public void setAutor(String Autor) {
+        this.Autor = Autor;
     }
     
     

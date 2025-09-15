@@ -107,7 +107,8 @@ public class WriteOrientacionController implements Initializable {
 
                 Orientacion.getInstancia().setOrientacion(txt_orientacion.getText());
                 int idCaso = casoSelected.getIdCaso();
-                int codOrienta = orientaDAO.insertarOrientacion(txt_orientacion.getText(), idCaso);
+                int ci = Integer.parseInt(SessionManager.getInstance().getCiUsuario()); 
+                int codOrienta = orientaDAO.insertarOrientacion(txt_orientacion.getText(), idCaso, ci);
 
                 if (codOrienta > 0) {
                     Timestamp fecha = orientaDAO.getFechaOrientacion(codOrienta);
@@ -121,12 +122,12 @@ public class WriteOrientacionController implements Initializable {
                         txt_Autor.setText(session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido());
                         txt_idOrienta.setText("Orientación: " + String.valueOf(codOrienta));
                         txt_autorCI.setText(session.getCiUsuario());
-                        int ci = Integer.parseInt(session.getCiUsuario()); 
+                        
                         String depa = orientaDAO.getDescripcionDepartamentoPorCI(ci); 
                         if(depa!=null){
                             txt_departamento.setText(depa);
                         }else{
-                            ControladorUtils.mostrarAlerta("Aviso", "El departamento del equipo tecnico no ha sido isnertado en la base de datos ");
+                            ControladorUtils.mostrarAlerta("Aviso", "El departamento del equipo tecnico no ha sido insertado en la base de datos ");
                         }
                         
 

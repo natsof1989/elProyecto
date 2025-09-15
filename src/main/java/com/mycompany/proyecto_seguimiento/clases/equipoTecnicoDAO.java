@@ -5,6 +5,7 @@
 package com.mycompany.proyecto_seguimiento.clases;
 
 import com.mycompany.proyecto_seguimiento.modelo.CasoResumen;
+import com.mycompany.proyecto_seguimiento.modelo.OrientacionResumen;
 import com.mycompany.proyecto_seguimiento.modelo.equipoTecnico;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -140,45 +141,76 @@ public class equipoTecnicoDAO {
         return lista;
     }
     public List<CasoResumen> obtenerTodosLosCasosConDepartamentos() throws SQLException {
-    List<CasoResumen> lista = new ArrayList<>();
+        List<CasoResumen> lista = new ArrayList<>();
 
-    // Agrupamos por caso para que los departamentos queden en una lista
-    String sql = "SELECT id_caso, fecha, estudiante, especialidad, curso, activo, " +
-                 "GROUP_CONCAT(DISTINCT departamento SEPARATOR ', ') AS departamentos " +
-                 "FROM v_casos_equipo_tecnico " +
-                 "GROUP BY id_caso, fecha, estudiante, especialidad, curso, activo";
+        // Agrupamos por caso para que los departamentos queden en una lista
+        String sql = "SELECT id_caso, fecha, estudiante, especialidad, curso, activo, " +
+                     "GROUP_CONCAT(DISTINCT departamento SEPARATOR ', ') AS departamentos " +
+                     "FROM v_casos_equipo_tecnico " +
+                     "GROUP BY id_caso, fecha, estudiante, especialidad, curso, activo";
 
-    try (PreparedStatement ps = conexion.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-        while (rs.next()) {
-            CasoResumen caso = new CasoResumen();
-            caso.setId_caso(rs.getInt("id_caso"));
+            while (rs.next()) {
+                CasoResumen caso = new CasoResumen();
+                caso.setId_caso(rs.getInt("id_caso"));
 
-            Timestamp ts = rs.getTimestamp("fecha");
-            if (ts != null) {
-                caso.setFecha(ts.toLocalDateTime());
+                Timestamp ts = rs.getTimestamp("fecha");
+                if (ts != null) {
+                    caso.setFecha(ts.toLocalDateTime());
+                }
+
+                caso.setEstudiante(rs.getString("estudiante"));
+                caso.setEspecialidad(rs.getString("especialidad"));
+                caso.setCurso(rs.getString("curso"));
+                caso.setActivo(rs.getBoolean("activo"));
+
+                // Convertimos la cadena de departamentos en lista
+                String deps = rs.getString("departamentos");
+                List<String> listaDeps = new ArrayList<>();
+                if (deps != null && !deps.isEmpty()) {
+                    listaDeps.addAll(Arrays.asList(deps.split(",\\s*")));
+                }
+                caso.setDepartamentos((ArrayList<String>) listaDeps);
+
+                lista.add(caso);
             }
-
-            caso.setEstudiante(rs.getString("estudiante"));
-            caso.setEspecialidad(rs.getString("especialidad"));
-            caso.setCurso(rs.getString("curso"));
-            caso.setActivo(rs.getBoolean("activo"));
-
-            // Convertimos la cadena de departamentos en lista
-            String deps = rs.getString("departamentos");
-            List<String> listaDeps = new ArrayList<>();
-            if (deps != null && !deps.isEmpty()) {
-                listaDeps.addAll(Arrays.asList(deps.split(",\\s*")));
-            }
-            caso.setDepartamentos((ArrayList<String>) listaDeps);
-
-            lista.add(caso);
         }
-    }
 
-    return lista;
-}
+        return lista;
+    }
+    
+    public List<OrientacionResumen> obtenerOrientaciones() throws SQLException {
+        List<OrientacionResumen> lista = new ArrayList<>();
+
+        String sql = "SELECT cod_orientacion, fecha, estudiante, especialidad, curso, id_caso, autor " +
+                     "FROM v_orientacion_resumen";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                OrientacionResumen orientacion = new OrientacionResumen();
+                orientacion.setCod_orientacion(rs.getInt("cod_orientacion"));
+                orientacion.setAutor(rs.getString("autor"));
+
+                Timestamp ts = rs.getTimestamp("fecha");
+                if (ts != null) {
+                    orientacion.setFecha(ts);
+                }
+
+                orientacion.setEstudiante(rs.getString("estudiante"));
+                orientacion.setEspecialidad(rs.getString("especialidad"));
+                orientacion.setCurso(rs.getString("curso"));
+                orientacion.setId_caso(rs.getInt("id_caso"));
+
+                lista.add(orientacion);
+            }
+        }
+
+        return lista;
+    }
 
 
    

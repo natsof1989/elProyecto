@@ -9,7 +9,7 @@
 
 <HBox alignment="CENTER" prefHeight="569.0" prefWidth="800.0" spacing="10.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.EquipoTecnico4Controller">
    <children>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="546.0" prefWidth="175.0" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="175.0" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
             <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="42.0" prefWidth="224.0" styleClass="boton-nuevo" text="⬅" />
             <Accordion />
@@ -17,7 +17,7 @@
             <Button fx:id="btn_misCasos" mnemonicParsing="false" onAction="#abrirMisCasos" prefHeight="23.0" prefWidth="196.0" styleClass="boton-nuevo" text="Casos asignados" />
          </children>
       </VBox>
-      <StackPane fx:id="contenedor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contenedor-botones" HBox.hgrow="ALWAYS" />
+      <StackPane fx:id="contenedor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" styleClass="contenedor-botones" HBox.hgrow="ALWAYS" />
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

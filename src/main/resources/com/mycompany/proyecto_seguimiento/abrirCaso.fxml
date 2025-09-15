@@ -17,7 +17,7 @@
 
 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="645.0" prefWidth="907.0" spacing="20.0" styleClass="root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.AbrirCasoController">
    <children>
-      <VBox blendMode="LIGHTEN" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="214.0" spacing="10.0" style="-fx-background-color: white;" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
+      <VBox blendMode="LIGHTEN" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="214.0" spacing="10.0" style="-fx-background-color: white;" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
             <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="38.0" prefWidth="240.0" styleClass="boton-nuevo" text="Salir">
                <font>
