@@ -6,10 +6,12 @@ package com.mycompany.proyecto_seguimiento.clases;
 
 import java.sql.Connection;
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
+import com.mycompany.proyecto_seguimiento.modelo.Tutores;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,28 +27,48 @@ public class CasoDAO {
     }
     
     public void cargarDetalleCaso(int idCaso) {
-        String sql = "{CALL get_caso_detalle(?)}";
+    String sql = "SELECT * FROM seguimiento.vista_caso_detalle WHERE id_caso = ?";
 
-        try (
-             CallableStatement stmt = conexion.prepareCall(sql)) {
+    try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-            stmt.setInt(1, idCaso);
+        stmt.setInt(1, idCaso);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    CasoSeleccionado caso = CasoSeleccionado.getInstancia();
-                    caso.setDescripcion(rs.getString("descripcion"));
-                    caso.setArchivo(rs.getBytes("archivo"));
-                    caso.setCiProfesor(String.valueOf(rs.getInt("profesor_CI")));
-                    caso.setNombreProfesor(rs.getString("profesor"));
-                    String extension = rs.getString("extension");
-                    caso.setExtension(extension != null ? extension : "");
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                CasoSeleccionado caso = CasoSeleccionado.getInstancia();
+
+                // Datos del caso
+                caso.setDescripcion(rs.getString("descripcion"));
+                caso.setArchivo(rs.getBytes("archivo"));
+                caso.setExtension(rs.getString("extension") != null ? rs.getString("extension") : "");
+                caso.setCiProfesor(String.valueOf(rs.getInt("profesor_CI")));
+                caso.setNombreProfesor(rs.getString("profesor"));
+
+                // Limpiar lista de tutores
+                if (caso.getTutores() == null) {
+                    caso.setTutores(new ArrayList<>());
+                } else {
+                    caso.getTutores().clear();
                 }
+
+                // Crear objetos Tutores y agregarlos a la lista
+                Tutores tutor1 = new Tutores();
+                tutor1.setGmail(rs.getString("correo_tutor1"));
+                tutor1.setTelefono(rs.getString("telefono_tutor1"));
+                caso.getTutores().add(tutor1);
+
+                Tutores tutor2 = new Tutores();
+                tutor2.setGmail(rs.getString("correo_tutor2"));
+                tutor2.setTelefono(rs.getString("telefono_tutor2"));
+                caso.getTutores().add(tutor2);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
+
     
     public void aplicarCambiosAsignacion(int idCaso, List<Integer> aInsertar, List<Integer> aEliminar) throws SQLException {
         String insertSQL = "INSERT INTO det_caso (id_caso, equipo_tecnico_CI) VALUES (?, ?)";

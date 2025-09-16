@@ -58,6 +58,11 @@
                         </VBox>
                      </content>
                   </TitledPane>
+                  <TitledPane fx:id="titled_tutores" animated="false" prefHeight="283.0" prefWidth="212.0" styleClass="titled-pane-celeste" text="Tutores">
+                    <content>
+                        <VBox fx:id="tutor_content" prefHeight="56.0" prefWidth="178.0" />
+                    </content>
+                  </TitledPane>
                   <TitledPane fx:id="jefa_content" maxWidth="-Infinity" prefHeight="82.0" prefWidth="211.0" styleClass="titled-pane-celeste" text="Asignar caso">
                      <content>
                         <Button fx:id="btn_asignar" mnemonicParsing="false" onAction="#asignarCaso" prefHeight="38.0" prefWidth="190.0" styleClass="boton-azul" text="Asignar" />

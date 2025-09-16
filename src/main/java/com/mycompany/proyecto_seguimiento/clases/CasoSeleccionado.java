@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyecto_seguimiento.clases;
 
+import com.mycompany.proyecto_seguimiento.modelo.Tutores;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class CasoSeleccionado {
     private String fxmlAnterior;
     private String extension; 
     private List<Integer> asignados;
+    private List<Tutores> tutores; 
     
     private boolean activo; 
 
@@ -159,6 +161,14 @@ public class CasoSeleccionado {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public List<Tutores> getTutores() {
+        return tutores;
+    }
+
+    public void setTutores(List<Tutores> tutores) {
+        this.tutores = tutores;
     }
     
     // Método de conveniencia para resetear la instancia si es necesario

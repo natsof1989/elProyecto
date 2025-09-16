@@ -1,5 +1,6 @@
 package com.mycompany.proyecto_seguimiento.clases;
 
+import com.mycompany.proyecto_seguimiento.modelo.Especialidad;
 import com.mycompany.proyecto_seguimiento.modelo.UsuarioDatos;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SessionManager {
     private boolean registroEnProgreso = false;
     private UsuarioDatos usuarioDatos; 
     private String pagina_anterior; 
+    private Especialidad espe; 
 
     public String getPagina_anterior() {
         return pagina_anterior;
@@ -136,6 +138,14 @@ public class SessionManager {
         this.passwordTemporal = null;
         this.pagina_anterior = null; 
         this.registroEnProgreso = false;
+    }
+
+    public Especialidad getEspe() {
+        return espe;
+    }
+
+    public void setEspe(Especialidad espe) {
+        this.espe = espe;
     }
     
 

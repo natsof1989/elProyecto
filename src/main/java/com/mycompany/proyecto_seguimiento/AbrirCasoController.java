@@ -13,6 +13,7 @@ import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
+import com.mycompany.proyecto_seguimiento.modelo.Tutores;
 import com.mycompany.proyecto_seguimiento.modelo.equipoTecnico;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -104,6 +105,10 @@ public class AbrirCasoController implements Initializable {
     private Button btn_cargarOrienta;
     @FXML
     private Text txt_estado;
+    @FXML
+    private TitledPane titled_tutores;
+    @FXML
+    private VBox tutor_content;
     
      
     
@@ -150,12 +155,15 @@ public class AbrirCasoController implements Initializable {
         }
           
         String fxml = datosCaso.getFxmlAnterior(); 
-        
+        mostrarTutoresContent();
         if ("teacher1".equals(fxml) || "teacher2".equals(fxml)) {
             equipoT_content.setVisible(false);
             opcionesET.setVisible(false);    
+            titled_tutores.setVisible(false);
         } else{
-           equipoT_content.setVisible(true);
+            titled_tutores.setVisible(true);
+            equipoT_content.setVisible(true);
+            
            opcionesET.setVisible(true);   
            if (!asignados.isEmpty()) {
                 btn_asignar.setText("Reasignar");
@@ -178,11 +186,33 @@ public class AbrirCasoController implements Initializable {
             
             
         }
-        
-
 
         // TODO
     }    
+    private void mostrarTutoresContent() {
+        VBox content = new VBox(8); // Contenedor vertical con espacio entre tutores
+        tutor_content.getChildren().add(content); // Si tutor_content es un ScrollPane, si no, usa getChildren().add(content);
+
+        List<Tutores> tutores = CasoSeleccionado.getInstancia().getTutores();
+
+        if (tutores == null || tutores.isEmpty()) {
+            Label label = new Label("No hay tutores asignados");
+            label.setStyle("-fx-padding: 6; -fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-background-radius: 5;");
+            content.getChildren().add(label);
+            return;
+        }
+
+        for (Tutores tutor : tutores) {
+            String correo = tutor.getGmail() != null ? tutor.getGmail() : "juanito@gmail.com";
+            String telefono = tutor.getTelefono() != null ? tutor.getTelefono() : "0999111222";
+            String texto = "Correo: " + correo + " | Teléfono: " + telefono;
+            Label label = new Label(texto);
+            label.setWrapText(true);
+            label.setStyle("-fx-padding: 6; -fx-background-color: #e0f7fa; -fx-border-color: #b2ebf2; -fx-background-radius: 5;");
+            content.getChildren().add(label);
+        }
+    }
+
     
     private void mostrarEquipoContent(List<Integer> asignados) {
     VBox content = new VBox(8); // Contenedor vertical con espacio

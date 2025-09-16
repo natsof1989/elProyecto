@@ -184,7 +184,7 @@ public class equipoTecnicoDAO {
     public List<OrientacionResumen> obtenerOrientaciones() throws SQLException {
         List<OrientacionResumen> lista = new ArrayList<>();
 
-        String sql = "SELECT cod_orientacion, fecha, estudiante, especialidad, curso, id_caso, autor " +
+        String sql = "SELECT cod_orientacion, fecha, estudiante, especialidad, curso, id_caso, autor_orientacion " +
                      "FROM v_orientacion_resumen";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql);
@@ -193,7 +193,7 @@ public class equipoTecnicoDAO {
             while (rs.next()) {
                 OrientacionResumen orientacion = new OrientacionResumen();
                 orientacion.setCod_orientacion(rs.getInt("cod_orientacion"));
-                orientacion.setAutor(rs.getString("autor"));
+                orientacion.setAutor(rs.getString("autor_orientacion"));
 
                 Timestamp ts = rs.getTimestamp("fecha");
                 if (ts != null) {

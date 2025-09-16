@@ -18,6 +18,7 @@ public class OrientacionResumen {
     private String especialidad; 
     private String curso; 
     private int id_caso; 
+    
 
     public OrientacionResumen() {
     }

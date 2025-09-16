@@ -1,16 +1,20 @@
 package com.mycompany.proyecto_seguimiento;
 
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
+import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.modelo.UsuarioDatos;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
+import com.mycompany.proyecto_seguimiento.modelo.Especialidad;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,12 +40,16 @@ public class InicioSesionController implements Initializable {
     private final SessionManager session = SessionManager.getInstance();
     private final conexion dbConexion = new conexion();
     private UsuarioDatos datos;
+    private boolean isCoordi = false; 
+    
+    private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection()); 
     @FXML
     private StackPane rootPane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.usuarioDao = new UsuarioDAO(dbConexion.getConnection());
+       
     }
 
     
@@ -50,6 +58,7 @@ public class InicioSesionController implements Initializable {
     private void iniciarSesion(ActionEvent event) {
         if (ControladorUtils.hayCamposVacios(txtCI, txtContrasenhia)) {
             ControladorUtils.mostrarAlerta("Error", "Todos los campos son obligatorios");
+           
             return;
         }
 
@@ -83,7 +92,19 @@ public class InicioSesionController implements Initializable {
             session.setRolesUsuario(usuarioDao.obtenerRoles(ci));
             datos = usuarioDao.obtenerDatosUsuario(ci);
             session.setUsuarioDatos(datos);
-
+             
+            try {
+                Especialidad espe = profesorDao.esPioCoordi(Integer.parseInt(ci));
+            
+                if(espe!=null){
+                    SessionManager.getInstance().setEspe(espe);
+                    isCoordi = true; 
+                } 
+            // TODO
+        } catch (SQLException ex) {
+            Logger.getLogger(Teacher1Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
             List<String> roles = session.getRolesUsuario();
 
             if (roles.size() == 1) {
@@ -96,7 +117,12 @@ public class InicioSesionController implements Initializable {
                 App.setRoot(vista);
 
             } else if (roles.size() > 1) {
-                App.setRoot("SeleccionRol");
+                if(isCoordi){
+                    App.setRoot("teacher1");
+                } else{
+                    App.setRoot("SeleccionRol");
+                }
+                
             } else {
                 ControladorUtils.mostrarAlerta("Error", "Usuario sin roles asignados");
             }

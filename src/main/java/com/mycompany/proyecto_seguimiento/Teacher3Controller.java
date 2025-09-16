@@ -53,7 +53,7 @@ public class Teacher3Controller implements Initializable {
     private final SessionManager session = SessionManager.getInstance();
     private final conexion dbConexion = new conexion();
     private UsuarioDAO usuarioDao;
-    private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection());; 
+    private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection()); 
     
     private final String profCI = session.getCiUsuario(); 
     private File archivoSeleccionado;

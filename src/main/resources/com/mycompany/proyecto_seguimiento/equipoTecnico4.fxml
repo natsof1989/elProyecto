@@ -17,7 +17,7 @@
             <Button fx:id="btn_misCasos" mnemonicParsing="false" onAction="#abrirMisCasos" prefHeight="23.0" prefWidth="196.0" styleClass="boton-nuevo" text="Casos asignados" />
          </children>
       </VBox>
-      <StackPane fx:id="contenedor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" styleClass="contenedor-botones" HBox.hgrow="ALWAYS" />
+      <StackPane fx:id="contenedor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="contenedor-botones" HBox.hgrow="ALWAYS" />
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

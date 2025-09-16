@@ -180,7 +180,57 @@ public class ProfesorDAO {
             return listaCasos;
          }
 
+    public Especialidad esPioCoordi(int ci) throws SQLException {
+        String sql = "SELECT id_especialidad, nombre_especialidad FROM v_coordinadores WHERE ci_coordinador = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, ci);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Especialidad especial = new Especialidad();
+                    especial.setId(rs.getInt("id_especialidad"));
+                    especial.setNombre(rs.getString("nombre_especialidad"));
+                    
+                    return especial;
+                }
+            }
+        }
+        return null; // si no se encuentra el CI
+    }
 
+     public List<CasoResumen> obtenerCasosPorEspe(String Espe) {
+        List<CasoResumen> listaCasos = new ArrayList<>();
+        String sql = "SELECT id_caso, fecha, estudiante, especialidad, curso " +
+                     "FROM seguimiento.profesor_caso_resumen " +
+                     "WHERE especialidad = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, Espe);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CasoResumen caso = new CasoResumen();
+                    caso.setId_caso(rs.getInt("id_caso"));
+
+                    // Convertimos de java.sql.Timestamp a LocalDateTime
+                    Timestamp ts = rs.getTimestamp("fecha");
+                    if (ts != null) {
+                        caso.setFecha(ts.toLocalDateTime());
+                    }
+
+                    caso.setEstudiante(rs.getString("estudiante"));
+                    caso.setEspecialidad(rs.getString("especialidad"));
+                    caso.setCurso(rs.getString("curso"));
+
+                    listaCasos.add(caso);
+                }
+            }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return listaCasos;
+         }
+     
 
 }
 

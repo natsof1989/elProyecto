@@ -11,7 +11,10 @@
 <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="551.0" prefWidth="1139.0" spacing="10.0" styleClass="contenedor-botones" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.ReadOrienta2Controller">
 
     <children>
-        <Label alignment="TOP_CENTER" styleClass="titulo-principal" text="Lectura de todas las orientaciones" />
+        <Label alignment="TOP_CENTER" styleClass="titulo-principal" text="Lectura de todas las orientaciones">
+         <VBox.margin>
+            <Insets bottom="30.0" top="30.0" />
+         </VBox.margin></Label>
         
         <TextField fx:id="txt_buscar" onKeyReleased="#buscar" prefHeight="23.0" prefWidth="639.0" promptText="🔎" styleClass="campo-texto">
             <VBox.margin>
