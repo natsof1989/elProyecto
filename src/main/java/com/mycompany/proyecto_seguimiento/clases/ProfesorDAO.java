@@ -100,10 +100,10 @@ public class ProfesorDAO {
     
     
     //insertar casos a la base de datos 
-    public boolean insertarCaso(String observaciones, int ciProfesor, int ciEstudiante, File archivoSeleccionado) {
+     public int insertarCaso(String observaciones, int ciProfesor, int ciEstudiante, File archivoSeleccionado) {
         String sql = "INSERT INTO caso (fecha, obs_generales, activo, profesor_CI, estudiante_CI, archivo, extension) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             // Fecha actual
             stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
 
@@ -122,7 +122,7 @@ public class ProfesorDAO {
                 FileInputStream fis = new FileInputStream(archivoSeleccionado);
                 stmt.setBinaryStream(6, fis, (int) archivoSeleccionado.length());
 
-                // Guardar extensión, incluyendo el punto (ej: ".pdf")
+                // Guardar extensión, incluyendo el punto
                 String nombre = archivoSeleccionado.getName();
                 String extension = "";
                 int i = nombre.lastIndexOf('.');
@@ -130,18 +130,25 @@ public class ProfesorDAO {
                     extension = nombre.substring(i); // ".pdf", ".jpg", etc.
                 }
                 stmt.setString(7, extension);
-
             } else {
                 stmt.setNull(6, Types.BLOB);
                 stmt.setNull(7, Types.VARCHAR);
             }
 
             stmt.executeUpdate();
-            return true;
+
+            // Obtener el ID generado
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return -1; // no se generó ID
+                }
+            }
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
@@ -178,7 +185,7 @@ public class ProfesorDAO {
                 e.printStackTrace();
             }
             return listaCasos;
-         }
+    }
 
     public Especialidad esPioCoordi(int ci) throws SQLException {
         String sql = "SELECT id_especialidad, nombre_especialidad FROM v_coordinadores WHERE ci_coordinador = ?";

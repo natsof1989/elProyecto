@@ -5,6 +5,7 @@ import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.modelo.Especialidad;
+import java.io.File;
 import java.io.IOException;
 
 import java.net.URL;
@@ -43,6 +44,8 @@ public class Teacher1Controller implements Initializable {
     private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection()); 
     @FXML
     private Button btn_casosEspe;
+    @FXML
+    private Button btn_ayuda;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         txt_ci.setText(SessionManager.getInstance().getCiUsuario());
@@ -83,11 +86,33 @@ public class Teacher1Controller implements Initializable {
 
     @FXML
     private void logout(ActionEvent event) {
-        ControladorUtils.cambiarVista("inicioSesion");
+         if(ControladorUtils.mostrarConfirmacion("Confirmar logout", "¿Desea cerrar sesión?")){
+                // Limpiar todo el estado de la sesión
+           SessionManager.getInstance().limpiarSesion();
+
+           // Cambiar a la vista de inicio de sesión
+           ControladorUtils.cambiarVista("inicioSesion");
+        }
     }
+
 
     @FXML
     private void abrirCasosEspe(ActionEvent event) {
         ControladorUtils.cambiarVista("teacher4");
+    }
+
+    @FXML
+    private void ayuda(ActionEvent event) {
+         String AyudaPath = getClass().getResource("/Ayuda/Seguimiento.chm").getPath(); 
+        File file = new File(AyudaPath); 
+        if(file.exists()){
+            try{
+                java.awt.Desktop.getDesktop().open(file);
+            } catch(IOException ex) {
+                Logger.getLogger(Teacher1Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else{
+            System.out.println("El archivo CHM no existe");
+        }
     }
 }

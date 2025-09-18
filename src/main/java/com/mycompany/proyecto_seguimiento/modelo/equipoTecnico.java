@@ -12,8 +12,22 @@ public class equipoTecnico {
     private String ci; 
     private String nombreCompleto; 
     private String departamento; 
+    private String email; 
+
+    public equipoTecnico(String ci, String email) {
+        this.ci = ci;
+        this.email = email;
+    }
 
     public equipoTecnico() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public equipoTecnico(String ci, String nombreCompleto, String departamento) {

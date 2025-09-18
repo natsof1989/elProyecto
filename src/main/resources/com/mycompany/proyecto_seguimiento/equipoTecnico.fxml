@@ -40,6 +40,7 @@
                   <Button fx:id="btn_CASOS" alignment="CENTER" mnemonicParsing="false" onAction="#abrirCasos" prefHeight="38.0" prefWidth="185.0" styleClass="boton-azul" text="Casos" />
                   <Button fx:id="btn_configCuenta" mnemonicParsing="false" onAction="#configurarCuenta" prefHeight="38.0" prefWidth="186.0" styleClass="boton-azul" text="Configurar cuenta" />
                   <Button fx:id="btn_logout" mnemonicParsing="false" onAction="#cerrarSesion" prefHeight="38.0" prefWidth="189.0" styleClass="boton-azul" text="Cerrar sesión" />
+                  <Button fx:id="btn_ayuda" mnemonicParsing="false" onAction="#ayuda" prefHeight="23.0" prefWidth="230.0" styleClass="boton-azul" text="Sobre la app" />
                </children>
             </VBox>
          </children>

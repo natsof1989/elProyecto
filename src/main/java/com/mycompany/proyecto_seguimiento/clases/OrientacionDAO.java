@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyecto_seguimiento.clases;
 
+import com.mycompany.proyecto_seguimiento.modelo.Profes;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -115,6 +118,31 @@ public class OrientacionDAO {
         return descripcion;
     }
 
+   public List<Profes> getProfesByEspecialidad(String nombreEspecialidad) throws SQLException {
+        List<Profes> listaProfes = new ArrayList<>();
+
+        String sql = "SELECT profesor_id, email, id_especialidad, especialidad " +
+                     "FROM vista_profesor_especialidad " +
+                     "WHERE especialidad = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, nombreEspecialidad);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Profes profe = new Profes();
+                    profe.setCi(rs.getInt("profesor_id"));
+                    profe.setEmail(rs.getString("email"));
+                    profe.setId_espe(rs.getInt("id_especialidad"));
+                    profe.setNombreEspe(rs.getString("especialidad"));
+
+                    listaProfes.add(profe);
+                }
+            }
+        }
+
+        return listaProfes;
+    }
 
 }
 

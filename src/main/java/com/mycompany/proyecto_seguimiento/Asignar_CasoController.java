@@ -8,10 +8,12 @@ import com.mycompany.proyecto_seguimiento.clases.CasoDAO;
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.ET_singleton;
+import com.mycompany.proyecto_seguimiento.clases.EmailUtils;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
 import com.mycompany.proyecto_seguimiento.modelo.equipoTecnico;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -78,7 +80,9 @@ public class Asignar_CasoController implements Initializable {
 
     @FXML
     private void aceptar(ActionEvent event) {
-        int idCaso = CasoSeleccionado.getInstancia().getIdCaso();
+        
+        CasoSeleccionado caso = CasoSeleccionado.getInstancia();
+        int idCaso = caso.getIdCaso();
 
         // Lo seleccionado ahora
         List<Integer> seleccionados = new ArrayList<>();
@@ -89,12 +93,12 @@ public class Asignar_CasoController implements Initializable {
         }
 
         // Lo que había antes
-        List<Integer> originales = CasoSeleccionado.getInstancia().getAsignados();
+        List<Integer> originales = caso.getAsignados();
         if (originales == null) originales = new ArrayList<>();
 
         // Diferencias
         List<Integer> aInsertar = new ArrayList<>(seleccionados);
-        aInsertar.removeAll(originales); // <- importante!
+        aInsertar.removeAll(originales); // nuevos responsables
 
         List<Integer> aEliminar = new ArrayList<>(originales);
         aEliminar.removeAll(seleccionados);
@@ -103,8 +107,43 @@ public class Asignar_CasoController implements Initializable {
             try {
                 casoDAO.aplicarCambiosAsignacion(idCaso, aInsertar, aEliminar);
 
+                // Traer todos los miembros del equipo técnico
+                List<equipoTecnico> equipo = casoDAO.getEmailsEquipoTec();
+
+                // Recorrer cada miembro y enviar correo si fue asignado
+                for (equipoTecnico miembro : equipo) {
+                    String ci = miembro.getCi();
+                    String email = miembro.getEmail();
+
+                    // Si el CI está en la lista de asignados recientemente
+                    if (aInsertar.contains(Integer.valueOf(ci))) {
+                        String asunto = "Nuevo caso asignado";
+                        String mensaje = String.format(
+                            "Hola,\n\n" +
+                            "Se le ha asignado un nuevo caso en el sistema.\n\n" +
+                            "Detalles del caso:\n" +
+                            "- ID del caso: %d\n" + 
+                            "- Descripción del caso: %s\n"+
+                            "- Profesor que generó el caso: %s\n" +
+                            "- Estudiante: %s\n" +
+                            "- Especialidad: %s\n" +
+                            "- Curso: %s\n\n" +
+                            "Por favor, ingrese al sistema para revisarlo.\n\n" +
+                            "Saludos,\n" +
+                            "Sistema de Seguimiento",
+                            idCaso, caso.getDescripcion(),
+                            caso.getNombreProfesor(),
+                            caso.getEstudiante(),
+                            caso.getEspecialidad(),
+                            caso.getCurso()
+                        );
+
+                        EmailUtils.enviarCorreo(email, asunto, mensaje);
+                    }
+                }
+
                 // Actualizar el caso en memoria
-                CasoSeleccionado.getInstancia().setAsignados(seleccionados);
+                caso.setAsignados(seleccionados);
 
                 ControladorUtils.mostrarAlertaChill("Éxito", "Asignación exitosa.");
                 cerrarModal(event);
@@ -112,13 +151,13 @@ public class Asignar_CasoController implements Initializable {
             } catch (SQLException e) {
                 e.printStackTrace();
                 ControladorUtils.mostrarAlerta("Error", "No se pudo asignar el caso");
-                return; // no cerramos si hay error
             }
         } else {
             // No hubo cambios → simplemente cerrar
             cerrarModal(event);
         }
     }
+
 
 
     @FXML

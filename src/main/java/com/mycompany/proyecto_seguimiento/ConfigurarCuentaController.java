@@ -79,44 +79,44 @@ public class ConfigurarCuentaController implements Initializable {
     }
 
     @FXML
-private void eliminar(ActionEvent event) throws SQLException, IOException {
-    // Mostrar diálogo de confirmación
-    boolean confirmado = ControladorUtils.mostrarConfirmacion(
-        "Confirmar eliminación",
-        "¿Está seguro que desea eliminar su cuenta?\nEsta acción no se puede deshacer."
-    );
-    
-    if (confirmado) {
-        try {
-            
-            // Ejecutar desactivación
-            usuarioDao.desactivarCuenta(ci); 
-            session.limpiarSesion();
-            
-            // Mostrar confirmación
-            ControladorUtils.mostrarAlertaChill(
-                "Cuenta eliminada", 
-                "La cuenta ha sido eliminada con éxito.\nSerá redirigido al login."
-            );
-            
-            // Redirigir
-            
-            ControladorUtils.cambiarVista( "inicioSesion");
-            
-        } catch (SQLException ex) {
-            ControladorUtils.mostrarError(
-                "Error al eliminar", 
-                "No se pudo completar la eliminación de la cuenta", 
-                ex
+    private void eliminar(ActionEvent event) throws SQLException, IOException {
+        // Mostrar diálogo de confirmación
+        boolean confirmado = ControladorUtils.mostrarConfirmacion(
+            "Confirmar eliminación",
+            "¿Está seguro que desea eliminar su cuenta?\nEsta acción no se puede deshacer."
+        );
+
+        if (confirmado) {
+            try {
+
+                // Ejecutar desactivación
+                usuarioDao.desactivarCuenta(ci); 
+                session.limpiarSesion();
+
+                // Mostrar confirmación
+                ControladorUtils.mostrarAlertaChill(
+                    "Cuenta eliminada", 
+                    "La cuenta ha sido eliminada con éxito.\nSerá redirigido al login."
+                );
+
+                // Redirigir
+
+                ControladorUtils.cambiarVista( "inicioSesion");
+
+            } catch (SQLException ex) {
+                ControladorUtils.mostrarError(
+                    "Error al eliminar", 
+                    "No se pudo completar la eliminación de la cuenta", 
+                    ex
+                );
+            }
+        } else {
+            ControladorUtils.mostrarAlerta(
+                "Operación cancelada", 
+                "La eliminación de la cuenta fue cancelada"
             );
         }
-    } else {
-        ControladorUtils.mostrarAlerta(
-            "Operación cancelada", 
-            "La eliminación de la cuenta fue cancelada"
-        );
     }
-}
 
     @FXML
     private void guardar(ActionEvent event) throws SQLException {

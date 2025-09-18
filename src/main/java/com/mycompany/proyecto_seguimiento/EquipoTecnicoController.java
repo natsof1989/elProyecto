@@ -6,6 +6,8 @@ import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -39,6 +41,8 @@ public class EquipoTecnicoController implements Initializable {
     private final equipoTecnicoDAO equipoTecDAO = new equipoTecnicoDAO(dbConexion.getConnection());
     @FXML
     private Button btn_ORIENTA;
+    @FXML
+    private Button btn_ayuda;
     
 
     @Override
@@ -76,8 +80,16 @@ public class EquipoTecnicoController implements Initializable {
 
     @FXML
     private void cerrarSesion(ActionEvent event) {
-        ControladorUtils.cambiarVista("inicioSesion");
+        if(ControladorUtils.mostrarConfirmacion("Confirmar logout", "¿Desea cerrar sesión?")){
+                // Limpiar todo el estado de la sesión
+           SessionManager.getInstance().limpiarSesion();
+
+           // Cambiar a la vista de inicio de sesión
+           ControladorUtils.cambiarVista("inicioSesion");
+        }
+       
     }
+
 
     @FXML
     private void asignarCaso(ActionEvent event) {
@@ -95,5 +107,20 @@ public class EquipoTecnicoController implements Initializable {
     @FXML
     private void abrirCasos(ActionEvent event) {
         ControladorUtils.cambiarVista("equipoTecnico4");
+    }
+
+    @FXML
+    private void ayuda(ActionEvent event) {
+        String AyudaPath = getClass().getResource("/Ayuda/Seguimiento.chm").getPath(); 
+        File file = new File(AyudaPath); 
+        if(file.exists()){
+            try{
+                java.awt.Desktop.getDesktop().open(file);
+            } catch(IOException ex) {
+                Logger.getLogger(EquipoTecnicoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else{
+            System.out.println("El archivo CHM no existe");
+        }
     }
 }

@@ -2,11 +2,16 @@ package com.mycompany.proyecto_seguimiento;
 
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
-import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
-import com.mycompany.proyecto_seguimiento.modelo.UsuarioDatos;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
+import com.mycompany.proyecto_seguimiento.clases.conexion;
 import com.mycompany.proyecto_seguimiento.modelo.Especialidad;
+import com.mycompany.proyecto_seguimiento.modelo.UsuarioDatos;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,18 +21,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
-
 public class InicioSesionController implements Initializable {
 
     @FXML private TextField txtCI;
@@ -35,30 +28,25 @@ public class InicioSesionController implements Initializable {
     @FXML private Button btInicioSesion;
     @FXML private Hyperlink link1;
     @FXML private Hyperlink link2;
+    @FXML private StackPane rootPane;
 
     private UsuarioDAO usuarioDao;
     private final SessionManager session = SessionManager.getInstance();
     private final conexion dbConexion = new conexion();
     private UsuarioDatos datos;
     private boolean isCoordi = false; 
-    
-    private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection()); 
-    @FXML
-    private StackPane rootPane;
+    private ProfesorDAO profesorDao; 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.usuarioDao = new UsuarioDAO(dbConexion.getConnection());
-       
+        this.profesorDao = new ProfesorDAO(dbConexion.getConnection());
     }
 
-    
-   
     @FXML
     private void iniciarSesion(ActionEvent event) {
         if (ControladorUtils.hayCamposVacios(txtCI, txtContrasenhia)) {
             ControladorUtils.mostrarAlerta("Error", "Todos los campos son obligatorios");
-           
             return;
         }
 
@@ -88,41 +76,42 @@ public class InicioSesionController implements Initializable {
                 return;
             }
 
+            // Guardamos datos en el SessionManager
             session.setCiUsuario(ci);
             session.setRolesUsuario(usuarioDao.obtenerRoles(ci));
             datos = usuarioDao.obtenerDatosUsuario(ci);
             session.setUsuarioDatos(datos);
-             
+
             try {
                 Especialidad espe = profesorDao.esPioCoordi(Integer.parseInt(ci));
-            
-                if(espe!=null){
-                    SessionManager.getInstance().setEspe(espe);
+                if (espe != null) {
+                    session.setEspe(espe);
                     isCoordi = true; 
-                } 
-            // TODO
-        } catch (SQLException ex) {
-            Logger.getLogger(Teacher1Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(InicioSesionController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             List<String> roles = session.getRolesUsuario();
 
             if (roles.size() == 1) {
                 session.setRolSeleccionado(roles.get(0));
+                String vista = roles.get(0).equals("PROFESOR") ? "teacher1" : "equipoTecnico";
 
-                String vista = roles.get(0).equals("PROFESOR")
-                        ? "teacher1"
-                        : "equipoTecnico";
+                // Guardar sesión persistente
+                session.guardarSesionEnArchivo();
 
                 App.setRoot(vista);
 
             } else if (roles.size() > 1) {
-                if(isCoordi){
+                if (isCoordi) {
+                    session.setRolSeleccionado("PROFESOR"); // Forzar coordinador
+                    session.guardarSesionEnArchivo();
                     App.setRoot("teacher1");
-                } else{
+                } else {
+                    session.guardarSesionEnArchivo();
                     App.setRoot("SeleccionRol");
                 }
-                
             } else {
                 ControladorUtils.mostrarAlerta("Error", "Usuario sin roles asignados");
             }

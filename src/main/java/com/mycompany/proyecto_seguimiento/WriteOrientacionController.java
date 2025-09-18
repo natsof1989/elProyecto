@@ -6,14 +6,17 @@ package com.mycompany.proyecto_seguimiento;
 
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
+import com.mycompany.proyecto_seguimiento.clases.EmailUtils;
 import com.mycompany.proyecto_seguimiento.clases.Orientacion;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionDAO;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
+import com.mycompany.proyecto_seguimiento.modelo.Profes;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -96,10 +99,8 @@ public class WriteOrientacionController implements Initializable {
     }
 
     @FXML
-   private void guardar(ActionEvent event) throws SQLException {
+    private void guardar(ActionEvent event) throws SQLException {
         if (!ControladorUtils.hayCamposVacios(txt_orientacion)) {
-            
-
             if (ControladorUtils.mostrarConfirmacion(
                     "Guardar orientación",
                     "¿Desea guardar la orientación?\nEsta acción no puede deshacerse")) {
@@ -115,25 +116,44 @@ public class WriteOrientacionController implements Initializable {
                     Orientacion.getInstancia().setFecha(fecha);
 
                     if (fecha != null) {
-                        System.out.println(fecha);
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                         String fechaFormateada = fecha.toLocalDateTime().format(formatter);
                         txt_fecha.setText(fechaFormateada);
                         txt_Autor.setText(session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido());
                         txt_idOrienta.setText("Orientación: " + String.valueOf(codOrienta));
                         txt_autorCI.setText(session.getCiUsuario());
-                        
+
                         String depa = orientaDAO.getDescripcionDepartamentoPorCI(ci); 
-                        if(depa!=null){
+                        if (depa != null) {
                             txt_departamento.setText(depa);
-                        }else{
-                            ControladorUtils.mostrarAlerta("Aviso", "El departamento del equipo tecnico no ha sido insertado en la base de datos ");
+                        } else {
+                            ControladorUtils.mostrarAlerta("Aviso", "El departamento del equipo técnico no ha sido insertado en la base de datos ");
                         }
-                        
+
+                        // ✅ Aquí añadimos el envío de emails a los profesores de esa especialidad
+                        String especialidad = casoSelected.getEspecialidad(); 
+                        List<Profes> profesList = orientaDAO.getProfesByEspecialidad(especialidad);
+
+                        String subject = "Nueva orientación para la especialidad " + especialidad;
+                        String body = "Estimado profesor/a,\n\n" +
+                                      "Se ha registrado una nueva orientación para el caso del estudiante: " + casoSelected.getEstudiante() + "\n" +
+                                      "Especialidad: " + casoSelected.getEspecialidad() + "\n" +
+                                      "Curso: " + casoSelected.getCurso() + "\n" +
+                                      "Profesor responsable: " + casoSelected.getNombreProfesor() + "\n" +
+                                      "Fecha: " + fechaFormateada + "\n\n" +
+                                      "Detalle de la orientación:\n" + txt_orientacion.getText() + "\n\n" +
+                                     "\n"+"Autor de la orientación: "+ session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido() + "\n" +
+                                      "Atentamente,\nSistema de Seguimiento" ;
+
+                        for (Profes profe : profesList) {
+                            if (profe.getEmail() != null && !profe.getEmail().isEmpty()) {
+                                EmailUtils.enviarCorreo(profe.getEmail(), subject, body);
+                            }
+                        }
 
                         ControladorUtils.mostrarAlertaChill(
                             "Carga exitosa",
-                            "La orientación fue guardada con éxito"
+                            "La orientación fue guardada con éxito y los profesores de la especialidad han sido notificados."
                         );
                         txt_orientacion.setDisable(true);
                     } else {
@@ -155,7 +175,8 @@ public class WriteOrientacionController implements Initializable {
                 "No puede cargar una orientación vacía"
             );
         }
-}
+    }
+
 
 
    

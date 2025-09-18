@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="1257.0" spacing="10.0" styleClass="contenedor-botones" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.ReadCasosController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="1199.0" spacing="10.0" styleClass="contenedor-botones" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.ReadCasosController">
 
     <children>
         <Label alignment="TOP_CENTER" styleClass="titulo-principal" text="Lectura de todos los casos" />
@@ -25,7 +25,7 @@
             </TextField>
          </children>
       </HBox>
-       <TableView fx:id="tabla_casos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#mostrarFila" prefHeight="353.0" prefWidth="1111.0">
+       <TableView fx:id="tabla_casos" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#mostrarFila" prefHeight="353.0">
             <columns>
                 <!-- Columnas fijas -->
                 <TableColumn fx:id="col_idCaso" maxWidth="54.0" prefWidth="54.0" text="N° Caso" />

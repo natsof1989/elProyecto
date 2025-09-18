@@ -1,7 +1,9 @@
 package com.mycompany.proyecto_seguimiento;
 
+import com.mycompany.proyecto_seguimiento.clases.CasoDAO;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
+import com.mycompany.proyecto_seguimiento.clases.EmailUtils;
 import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
@@ -54,12 +56,15 @@ public class Teacher3Controller implements Initializable {
     private final conexion dbConexion = new conexion();
     private UsuarioDAO usuarioDao;
     private ProfesorDAO profesorDao = new ProfesorDAO(dbConexion.getConnection()); 
+    private CasoDAO casoDao = new CasoDAO(dbConexion.getConnection()); 
     
     private final String profCI = session.getCiUsuario(); 
     private File archivoSeleccionado;
     private HBox hboxArchivoSeleccionado; 
     
     private static final long MAX_FILE_SIZE = 16L * 1024 * 1024; // 16 MB
+    @FXML
+    private Button btn_imprimir;
    
     
     @Override
@@ -215,33 +220,92 @@ public class Teacher3Controller implements Initializable {
             ControladorUtils.mostrarAlertaChill("Informamos", "No puede enviar un caso sin descripción. \n Describa el caso antes de enviar");
             return; 
         } 
-
-        // Validación tamaño archivo (última barrera)
-        if (this.archivoSeleccionado != null && !ControladorUtils.validarTamanoArchivo(this.archivoSeleccionado, MAX_FILE_SIZE)) {
-            // ya muestra la alerta desde validarTamanoArchivo
-            return;
-        }
-
-        String descripcion = txt_caso.getText(); 
-        int ciAlumno = cmb_alumno.getSelectionModel().getSelectedItem().getCi();
-        int profe_CI = Integer.parseInt(profCI); 
-        File archivo = this.archivoSeleccionado;
-        try {
-            boolean exito = profesorDao.insertarCaso(descripcion, profe_CI, ciAlumno, archivo);
-
-            if (exito) {
-                ControladorUtils.mostrarAlertaChill("Éxito", "El caso fue guardado correctamente.");
-                txt_caso.clear();
-                cmb_alumno.getSelectionModel().clearSelection();
-                // limpiar la variable de instancia y UI
-                this.archivoSeleccionado = null;
-                cancelar(event);
-            } else {
-                ControladorUtils.mostrarError("Error", "No se pudo guardar el caso.", null);
+        if(ControladorUtils.mostrarConfirmacion("Confirmar acción", "¿Desea guardar el caso?\n Esta acción no puede ser deshecha.")){
+                // Validación tamaño archivo (última barrera)
+            if (this.archivoSeleccionado != null && !ControladorUtils.validarTamanoArchivo(this.archivoSeleccionado, MAX_FILE_SIZE)) {
+                // ya muestra la alerta desde validarTamanoArchivo
+                return;
             }
-        } catch (Exception ex) {
-            ControladorUtils.mostrarError("Excepción", "Ocurrió un error al guardar el caso.", ex);
-        }        
+
+            String descripcion = txt_caso.getText(); 
+            int ciAlumno = cmb_alumno.getSelectionModel().getSelectedItem().getCi();
+            int profe_CI = Integer.parseInt(profCI); 
+            File archivo = this.archivoSeleccionado;
+            try {
+                int exito = profesorDao.insertarCaso(descripcion, profe_CI, ciAlumno, archivo);
+
+                if (exito!=-1) {
+
+
+                    String email = casoDao.getEmailEvaluadora(); 
+                    String cuerpo = String.format(
+                        "Hola,\n\n" +
+                        "Se ha creado un nuevo caso en el sistema que requiere ser asignado a un miembro del equipo técnico.\n\n" +
+                        "Detalles del caso:\n" +
+                        "- ID del caso: %d\n" +
+                        "- Descripción del caso: %s\n"+
+                        "- Profesor que generó el caso: %s\n" +
+                        "- Estudiante: %s\n\n" +
+                        "Por favor, ingrese al sistema para asignar este caso.\n\n" +
+                        "Saludos,\n" +
+                        "Sistema de Seguimiento", exito, txt_caso.getText(), SessionManager.getInstance().getUsuarioDatos().getNombre() + " " + SessionManager.getInstance().getUsuarioDatos().getApellido(), 
+                        txt_estudiante.getText());
+                        EmailUtils.enviarCorreo(email, "Nuevo caso", cuerpo);
+                        List<String> emails = new ArrayList<>(); 
+                        emails = casoDao.getEmailsExceptoEvaluadora(); 
+
+                        for (String emailDestinatario : emails) {
+                            if(!emailDestinatario.equals(email)){
+                                String asunto = "Nuevo caso disponible";
+                                String mensaje = String.format(
+                                "Hola,\n\n" +
+                                "Se ha creado un nuevo caso en el sistema.\n\n" +
+                                "Detalles del caso:\n" +
+                                "- ID del caso: %d\n" +
+                                "- Profesor que generó el caso: %s\n" +
+                                "- Estudiante: %s\n\n" +
+                                "Por favor, ingrese al sistema para revisar este caso.\n\n" +
+                                "Saludos,\n" +
+                                "Sistema de Seguimiento",
+                                exito, 
+                                SessionManager.getInstance().getUsuarioDatos().getNombre() + " " +
+                                SessionManager.getInstance().getUsuarioDatos().getApellido(),
+                                txt_estudiante.getText()
+                                );
+
+                            // Llamada a EmailUtils
+                            EmailUtils.enviarCorreo(emailDestinatario, asunto, mensaje);
+                            }
+                            // Podés armar el mensaje según el caso
+
+                        }
+
+                        cmb_alumno.getSelectionModel().clearSelection();
+                    // limpiar la variable de instancia y UI
+                        this.archivoSeleccionado = null;
+                    ControladorUtils.mostrarAlertaChill("Éxito", "El caso fue guardado correctamente.");
+                    btn_imprimir.setDisable(false);
+
+                    cmb_espe.setDisable(true);
+                    cmb_curso.setDisable(true);
+                    cmb_alumno.setDisable(true); 
+                    txt_caso.setDisable(true);
+                    btn_cancelar.setDisable(true);
+                    btn_imprimir.setDisable(false); 
+
+                } else {
+                    ControladorUtils.mostrarError("Error", "No se pudo guardar el caso.", null);
+                }
+
+            } catch (Exception ex) {
+                ControladorUtils.mostrarError("Excepción", "Ocurrió un error al guardar el caso.", ex);
+            }        
+        }
+        
+    }
+
+    @FXML
+    private void imprimir(ActionEvent event) {
     }
 
 }
