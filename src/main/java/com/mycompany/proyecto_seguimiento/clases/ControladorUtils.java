@@ -1,31 +1,27 @@
 package com.mycompany.proyecto_seguimiento.clases;
 
 import com.mycompany.proyecto_seguimiento.App;
+import javafx.geometry.Insets;
+
+
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ConnectionBuilder;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -92,6 +88,41 @@ public class ControladorUtils {
             e.printStackTrace();
         }
     }
+    
+    private static Stage loadingStage;
+
+    public static Stage mostrarAlertaCargando(String titulo, String mensaje) {
+        if (loadingStage != null && loadingStage.isShowing()) return loadingStage;
+
+        ProgressIndicator spinner = new ProgressIndicator();
+        spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+
+        Label label = new Label(mensaje);
+        VBox box = new VBox(10, spinner, label);
+        box.setAlignment(Pos.CENTER);
+        box.setPadding(new Insets(20));
+
+        Scene scene = new Scene(box, 300, 120);
+
+        loadingStage = new Stage();
+        loadingStage.initModality(Modality.APPLICATION_MODAL);
+        loadingStage.setTitle(titulo);
+        loadingStage.setScene(scene);
+        loadingStage.setResizable(false);
+        loadingStage.show();
+
+        return loadingStage;
+    }
+
+    public static void cerrarAlertaCargando() {
+        if (loadingStage != null) {
+            Platform.runLater(() -> {
+                loadingStage.close();
+                loadingStage = null;
+            });
+        }
+    }
+
 
     public static void mostrarAlerta(String titulo, String mensaje) {
         new Alert(Alert.AlertType.ERROR, mensaje).showAndWait();

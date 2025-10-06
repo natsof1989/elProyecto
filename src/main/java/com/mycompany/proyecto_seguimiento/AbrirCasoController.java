@@ -4,11 +4,13 @@
  */
 package com.mycompany.proyecto_seguimiento;
 
+import com.mycompany.proyecto_seguimiento.clases.CasoDAO;
 import com.mycompany.proyecto_seguimiento.clases.ET_singleton;
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.Orientacion;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionDAO;
+import com.mycompany.proyecto_seguimiento.clases.Reporte;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.UsuarioDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
@@ -80,7 +82,7 @@ public class AbrirCasoController implements Initializable {
     private final equipoTecnicoDAO equipoTecDAO = new equipoTecnicoDAO(dbConexion.getConnection());
     private final int idCaso = CasoSeleccionado.getInstancia().getIdCaso();
     List<Integer> asignados = new ArrayList<>(); 
-    
+    private final CasoDAO casoDao = new CasoDAO(dbConexion.getConnection()); 
     CasoSeleccionado datosCaso = CasoSeleccionado.getInstancia(); 
     LocalDateTime fecha = datosCaso.getFecha();
     @FXML
@@ -109,6 +111,8 @@ public class AbrirCasoController implements Initializable {
     private TitledPane titled_tutores;
     @FXML
     private VBox tutor_content;
+    @FXML
+    private Button btn_imprimir;
     
      
     
@@ -203,8 +207,8 @@ public class AbrirCasoController implements Initializable {
         }
 
         for (Tutores tutor : tutores) {
-            String correo = tutor.getGmail() != null ? tutor.getGmail() : "juanito@gmail.com";
-            String telefono = tutor.getTelefono() != null ? tutor.getTelefono() : "0999111222";
+            String correo = tutor.getGmail() != null ? tutor.getGmail() : "no existe";
+            String telefono = tutor.getTelefono() != null ? tutor.getTelefono() : "no existe";
             String texto = "Correo: " + correo + " | Teléfono: " + telefono;
             Label label = new Label(texto);
             label.setWrapText(true);
@@ -277,8 +281,25 @@ public class AbrirCasoController implements Initializable {
     }
 
     @FXML
-    private void hisOrientacion(ActionEvent event) {
-        
+    private void hisOrientacion(ActionEvent event) throws SQLException {
+        String texto = txt_idCaso.getText();
+
+        // Extrae solo los números (por si el texto tiene 'Caso: 23' o similares)
+        String soloNumeros = texto.replaceAll("\\D+", ""); 
+
+        if (soloNumeros.isEmpty()) {
+            throw new NumberFormatException("El campo no contiene un número válido de caso.");
+        }
+
+        int idCaso = Integer.parseInt(soloNumeros);
+        List<Integer> codOrienta = orientaDao.getCodOrientacionesPorAlumno(idCaso); 
+         Reporte reporte = new Reporte();
+        reporte.generarYGuardarReporte(
+            btn_cas_historial.getScene().getWindow(),
+            "/reporte/orientaR.jasper",
+            "historial_orientaciones",
+            codOrienta
+        );
     }
 
     @FXML
@@ -317,5 +338,54 @@ public class AbrirCasoController implements Initializable {
         Orientacion.getInstancia().setFxmlAnterior("abrirCaso");
         
     }
+
+    @FXML
+   private void hisCasos(ActionEvent event) throws SQLException {
+    // Obtiene el texto y limpia cualquier cosa que no sea dígito
+        String texto = txt_idCaso.getText();
+
+        // Extrae solo los números (por si el texto tiene 'Caso: 23' o similares)
+        String soloNumeros = texto.replaceAll("\\D+", ""); 
+
+        if (soloNumeros.isEmpty()) {
+            throw new NumberFormatException("El campo no contiene un número válido de caso.");
+        }
+
+        int idCaso = Integer.parseInt(soloNumeros);
+
+        List<Integer> idCasosHistorial = casoDao.getIdCasosPorAlumno(idCaso);
+        Reporte reporte = new Reporte();
+        reporte.generarYGuardarReporte(
+            btn_cas_historial.getScene().getWindow(),
+            "/reporte/caso.jasper",
+            "historial_casos",
+            idCasosHistorial
+        );
+    }
+
+    @FXML
+    private void imprimirCaso(ActionEvent event) {
+        String texto = txt_idCaso.getText();
+
+        // Extrae solo los números (por si el texto tiene 'Caso: 23' o similares)
+        String soloNumeros = texto.replaceAll("\\D+", ""); 
+
+        if (soloNumeros.isEmpty()) {
+            throw new NumberFormatException("El campo no contiene un número válido de caso.");
+        }
+        List<Integer> idcaso = new ArrayList<>(); 
+        int idCaso = Integer.parseInt(soloNumeros);
+        idcaso.add(idCaso); 
+        
+        Reporte reporte = new Reporte();
+        reporte.generarYGuardarReporte(
+            btn_cas_historial.getScene().getWindow(),
+            "/reporte/caso.jasper",
+            "caso_"+idCaso,
+            idcaso
+        );
+    }
+    
+
 
 }

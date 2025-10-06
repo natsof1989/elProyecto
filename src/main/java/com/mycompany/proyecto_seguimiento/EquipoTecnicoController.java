@@ -43,8 +43,6 @@ public class EquipoTecnicoController implements Initializable {
     private Button btn_ORIENTA;
     @FXML
     private Button btn_ayuda;
-    @FXML
-    private Button btn_admi;
     
 
     @Override
@@ -126,8 +124,5 @@ public class EquipoTecnicoController implements Initializable {
         }
     }
 
-    @FXML
-    private void admi(ActionEvent event) {
-        ControladorUtils.cambiarVista("configDB");
-    }
+   
 }

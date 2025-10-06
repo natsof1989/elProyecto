@@ -12,7 +12,7 @@
 <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="646.0" prefWidth="575.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.Teacher1Controller">
     <!-- Fondo azul degradado se puede hacer en CSS del StackPane -->
     <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20" styleClass="contenedor-botones" StackPane.alignment="CENTER">
-        <Label fx:id="txt_bienvenida" styleClass="titulo-principal" text="Bienvenido">
+        <Label fx:id="txt_bienvenida" styleClass="titulo-principal" text="¡Bienvenido, profe!">
             <font>
                 <Font name="Segoe UI Semibold" size="29.0" />
             </font>

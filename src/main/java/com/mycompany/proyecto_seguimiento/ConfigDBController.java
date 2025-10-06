@@ -4,9 +4,13 @@
  */
 package com.mycompany.proyecto_seguimiento;
 
+import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
+import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,11 +27,8 @@ public class ConfigDBController {
     private TextField usuarioField;
     @FXML
     private PasswordField contrasenaField;
-
     @FXML
-    private void initialize() {
-        // Opcional: cargar valores previos si existen.
-    }
+    private Button btn_salir;
 
     @FXML
     private void guardarConfiguracion() {
@@ -44,7 +45,7 @@ public class ConfigDBController {
 
         String url = String.format("jdbc:mysql://%s:%s/%s", host, puerto, nombreBD);
 
-        conexion.guardarConfiguracion(url, usuario, contrasena);
+        //conexion.guardarConfiguracion(url, usuario, contrasena);
 
         mostrarAlerta("¡Configuración guardada exitosamente!");
 
@@ -59,5 +60,11 @@ public class ConfigDBController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void salir(ActionEvent event) {
+        SessionManager.getInstance().limpiarSesion();
+        ControladorUtils.cambiarVista("inicioSesion");
     }
 }

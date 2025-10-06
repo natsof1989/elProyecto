@@ -30,7 +30,24 @@ public class OrientacionDAO {
     }
     
     
-    
+    public List<Integer> getCodOrientacionesPorAlumno(int idCaso) throws SQLException {
+        String sql = "SELECT o2.cod_orientacion FROM orientacion o2 JOIN caso c2 ON o2.id_caso = c2.id_caso WHERE c2.estudiante_CI = (SELECT c1.estudiante_CI FROM caso c1 WHERE c1.id_caso = ?)";
+
+        List<Integer> codigos = new ArrayList<>();
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idCaso);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    codigos.add(rs.getInt("cod_orientacion"));
+                }
+            }
+        }
+
+        return codigos;
+    }
+
+
    public boolean existeUnaOrientacion(int ciEquipo) throws SQLException {
         String sql = "SELECT cod_orientacion FROM detalle_orientacion WHERE equipo_tecnico_CI = ? LIMIT 1"; 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -118,23 +135,26 @@ public class OrientacionDAO {
         return descripcion;
     }
 
-   public List<Profes> getProfesByEspecialidad(String nombreEspecialidad) throws SQLException {
+  public List<Profes> getProfesByEspecialidad(int idCurso, int id_estudiante) throws SQLException {
         List<Profes> listaProfes = new ArrayList<>();
 
-        String sql = "SELECT profesor_id, email, id_especialidad, especialidad " +
-                     "FROM vista_profesor_especialidad " +
-                     "WHERE especialidad = ?";
+        // Año actual
+        int anhio = java.time.LocalDate.now().getYear();
+
+        String sql = "SELECT id_profe, email " +
+                     "FROM vw_curso_profesor " +
+                     "WHERE id_curso = ? AND anhio_lectivo = ? AND id_estudiante = ?";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, nombreEspecialidad);
+            ps.setInt(1, idCurso);
+            ps.setInt(2, anhio);
+            ps.setInt(3, id_estudiante);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Profes profe = new Profes();
-                    profe.setCi(rs.getInt("profesor_id"));
+                    profe.setCi(rs.getInt("id_profe"));
                     profe.setEmail(rs.getString("email"));
-                    profe.setId_espe(rs.getInt("id_especialidad"));
-                    profe.setNombreEspe(rs.getString("especialidad"));
 
                     listaProfes.add(profe);
                 }
@@ -143,6 +163,7 @@ public class OrientacionDAO {
 
         return listaProfes;
     }
+
 
 }
 

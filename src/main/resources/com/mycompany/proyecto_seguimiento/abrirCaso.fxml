@@ -30,7 +30,7 @@
                         <VBox prefHeight="118.0" prefWidth="199.0" spacing="20.0">
                            <children>
                               <Button fx:id="btn_descargar" disable="true" mnemonicParsing="false" onAction="#descargarArchivo" prefHeight="38.0" prefWidth="165.0" styleClass="boton-azul" text="📎Archivo adjunto" />
-                              <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="168.0" styleClass="boton-azul" text="Generar PDF" />
+                              <Button fx:id="btn_imprimir" mnemonicParsing="false" onAction="#imprimirCaso" prefHeight="38.0" prefWidth="168.0" styleClass="boton-azul" text="Generar PDF" />
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -47,7 +47,7 @@
                      <content>
                         <VBox prefHeight="225.0" prefWidth="199.0" spacing="10.0">
                            <children>
-                              <Button fx:id="btn_cas_historial" alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="175.0" styleClass="boton-azul" text="Historial casos" />
+                              <Button fx:id="btn_cas_historial" alignment="CENTER" mnemonicParsing="false" onAction="#hisCasos" prefHeight="38.0" prefWidth="175.0" styleClass="boton-azul" text="Historial casos" />
                               <Button fx:id="btn_orienta_historial" mnemonicParsing="false" onAction="#hisOrientacion" prefHeight="42.0" prefWidth="202.0" styleClass="boton-azul" text="Historial orientaciones" />
                               <Button fx:id="btn_finCaso" mnemonicParsing="false" onAction="#finCaso" prefHeight="38.0" prefWidth="181.0" styleClass="boton-azul" text="Finalizar caso" />
                               <Button fx:id="btn_cargarOrienta" mnemonicParsing="false" onAction="#cargarOrienta" prefHeight="42.0" prefWidth="188.0" styleClass="boton-azul" text="Cargar orientación" />

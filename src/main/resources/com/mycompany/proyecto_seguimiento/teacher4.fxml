@@ -22,7 +22,7 @@
          <children>
             <HBox alignment="CENTER" spacing="200.0">
                <children>
-                  <Label fx:id="txt_label" alignment="CENTER" contentDisplay="CENTER" prefHeight="29.0" prefWidth="741.0" styleClass="titulo-principal" text="Casos enviados">
+                  <Label fx:id="txt_label" alignment="CENTER" contentDisplay="CENTER" prefHeight="29.0" prefWidth="741.0" styleClass="titulo-principal" text="Casos de la especialidad ">
                      <HBox.margin>
                         <Insets top="30.0" />
                      </HBox.margin></Label>

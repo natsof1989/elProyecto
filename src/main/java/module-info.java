@@ -9,6 +9,7 @@ module com.mycompany.proyecto_seguimiento {
     opens com.mycompany.proyecto_seguimiento to javafx.fxml;
     opens com.mycompany.proyecto_seguimiento.clases to javafx.fxml;
     opens com.mycompany.proyecto_seguimiento.modelo to javafx.base;
+    requires net.sf.jasperreports.core;
 
     exports com.mycompany.proyecto_seguimiento;
     // si necesitas usar clases de estos paquetes desde fuera del módulo:

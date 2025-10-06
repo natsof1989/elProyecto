@@ -4,12 +4,14 @@ import com.mycompany.proyecto_seguimiento.clases.CasoDAO;
 import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.ProfesorDAO;
+import com.mycompany.proyecto_seguimiento.clases.Reporte;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.modelo.CasoResumen;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -203,16 +205,22 @@ public class Teacher4Controller implements Initializable {
 
     @FXML
     private void generarInforme(ActionEvent event) {
+        
         if (seleccionados.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Seleccione al menos un caso para generar el informe.");
             alert.showAndWait();
             return;
         }
+        if(ControladorUtils.mostrarConfirmacion("Confirmar acción", "¿Desea generar un PDF de los casos seleccionados?")){
+            // Extraer los IDs de los casos seleccionados
+            List<Integer> idsSeleccionados = seleccionados.stream()
+                                                 .map(CasoResumen::getId_caso)
+                                                 .collect(java.util.stream.Collectors.toList());
 
-        // Tu lógica de JasperReports aquí
-        // JasperReportUtils.generarInformeCasos(seleccionados);
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Informe generado para " + seleccionados.size() + " casos (aquí iría Jasper).");
-        alert.showAndWait();
+           // Llamar a la clase Reporte para generar y guardar el PDF
+           Reporte reporte = new Reporte();
+           reporte.generarYGuardarReporte(btn_informe.getScene().getWindow(), "/reporte/caso.jasper", "reporte_casos", idsSeleccionados);
+        }
+        
     }
 }

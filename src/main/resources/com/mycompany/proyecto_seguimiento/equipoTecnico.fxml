@@ -31,7 +31,6 @@
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="32.0" prefWidth="92.0" styleClass="subtitulo" text="Apellido:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                   <Text fx:id="txt_nombre" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Sofia Nathalia" wrappingWidth="287.13671875" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
                   <Text fx:id="txt_apellido" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitulo" text="Acosta Figueredo" wrappingWidth="275.13671875" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                  <Button fx:id="btn_admi" mnemonicParsing="false" onAction="#admi" text="admi" GridPane.columnIndex="1" />
                </children>
             </GridPane>
             <VBox alignment="CENTER" prefHeight="350.0" prefWidth="444.0" spacing="10.0" VBox.vgrow="ALWAYS">

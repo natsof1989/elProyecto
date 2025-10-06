@@ -14,23 +14,27 @@
 
 <HBox spacing="5.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.Teacher3Controller">
    <children>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="567.0" prefWidth="164.0" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
+      <!-- Contenedor principal de botones (izquierda) -->
+      <VBox fx:id="vboxBotones" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="567.0" prefWidth="164.0" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
-                <Button onAction="#volver" prefHeight="42.0" prefWidth="173.0" styleClass="boton-nuevo" text="Salir" /> 
+            <Button onAction="#volver" prefHeight="42.0" prefWidth="173.0" styleClass="boton-nuevo" text="Salir" /> 
             <Button fx:id="btn_cancelar" disable="true" onAction="#cancelar" prefHeight="42.0" prefWidth="159.0" styleClass="boton-nuevo" text="Cancelar" /> 
-            <Button fx:id="btn_adjuntar" disable="true" onAction="#cargarArchivo" prefHeight="42.0" prefWidth="163.0" styleClass="boton-nuevo" text="Ajuntar archivo" /> 
+            <Button fx:id="btn_adjuntar" disable="true" onAction="#cargarArchivo" prefHeight="42.0" prefWidth="163.0" styleClass="boton-nuevo" text="Adjuntar archivo" /> 
             <Button fx:id="btn_guardar" disable="true" onAction="#GuardarCaso" prefHeight="42.0" prefWidth="187.0" styleClass="boton-nuevo" text="Guardar caso" />
             <Button fx:id="btn_imprimir" disable="true" mnemonicParsing="false" onAction="#imprimir" prefHeight="23.0" prefWidth="192.0" styleClass="boton-nuevo" text="Generar PDF" />
          </children>
       </VBox>
+
+      <!-- Contenedor de formulario (derecha) -->
       <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
-                <Label prefHeight="29.0" prefWidth="149.0" styleClass="titulo-principal" text="Nuevo caso">
+            <Label prefHeight="29.0" prefWidth="149.0" styleClass="titulo-principal" text="Nuevo caso">
                <VBox.margin>
                   <Insets top="30.0" />
                </VBox.margin>
             </Label>
-                <Label styleClass="subtitulo" text="Información del alumno" />
+            <Label styleClass="subtitulo" text="Información del alumno" />
+
             <HBox alignment="CENTER" prefHeight="55.0" prefWidth="523.0" spacing="15">
                <children>
                   <ComboBox fx:id="cmb_espe" onAction="#habilitarCurso" prefWidth="150.0" promptText="Especialidad" />
@@ -38,28 +42,32 @@
                   <ComboBox fx:id="cmb_alumno" disable="true" onAction="#cargarAlumno" prefHeight="23.0" prefWidth="200.0" promptText="Alumno" />
                </children>
             </HBox>
+
             <GridPane alignment="CENTER" prefHeight="32.0" prefWidth="445.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.0" minWidth="0.0" prefWidth="0.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="76.0" />
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.0" minWidth="0.0" prefWidth="0.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="76.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="364.0" minWidth="10.0" prefWidth="364.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
-                   <Text styleClass="subtitulo" text="Estudiante:" wrappingWidth="69.470703125" />
-                   <Text fx:id="txt_estudiante" styleClass="subtitulo" wrappingWidth="361.6611328125" GridPane.columnIndex="2" />
+                  <Text styleClass="subtitulo" text="Estudiante:" wrappingWidth="69.470703125" />
+                  <Text fx:id="txt_estudiante" styleClass="subtitulo" wrappingWidth="361.6611328125" GridPane.columnIndex="2" />
                </children>
             </GridPane>
-                
-                                  <Label styleClass="subtitulo" text="Describa el caso" />
-                <TextArea fx:id="txt_caso" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="311.0" prefWidth="495.0" styleClass="campo-texto" VBox.vgrow="ALWAYS">
+
+            <Label styleClass="subtitulo" text="Describa el caso" />
+            <TextArea fx:id="txt_caso" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="311.0" prefWidth="495.0" styleClass="campo-texto" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </TextArea>
-            <HBox fx:id="hboxBotones" alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="55.0" prefWidth="523.0" spacing="15" />
+
+            <!-- HBox para reemplazar el botón de adjuntar por el archivo seleccionado -->
+            <HBox fx:id="hboxArchivoSeleccionado" alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="55.0" prefWidth="523.0" spacing="15" />
+
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
@@ -7,50 +9,57 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
 <StackPane fx:id="rootPane" maxHeight="Infinity" maxWidth="Infinity" prefHeight="585.0" prefWidth="463.0" styleClass="root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.InicioSesionController">
     <!-- Fondo: imagen -->
-    <ImageView fitHeight="585.0" fitWidth="463.0" preserveRatio="false">
+    <ImageView fitHeight="585.0" fitWidth="463.0" preserveRatio="false" StackPane.alignment="CENTER">
         <image>
             <Image url="@img/ctn.jpg" />
         </image>
+      <viewport>
+         <Rectangle2D />
+      </viewport>
     </ImageView>
-    <!-- Panel blanco sobre el fondo -->
-    <Pane maxHeight="511.0" maxWidth="330" prefHeight="511.0" prefWidth="311.0" style="-fx-background-color: white; -fx-background-radius: 12;" styleClass="panel-contenedor">
-        <VBox alignment="CENTER" fillWidth="true" layoutX="15" layoutY="10" prefHeight="470" prefWidth="300" spacing="16">
-            <ImageView fitHeight="72.0" fitWidth="79.0" pickOnBounds="true" preserveRatio="true">
-                <image>
-                    <Image url="@img/user.png" />
-                </image>
-            </ImageView>
-            <Label styleClass="titulo-principal" text="Iniciar Sesión" textFill="BLACK">
-                <font>
-                    <Font name="Segoe UI Black" size="21.0" />
-                </font>
-            </Label>
-            <Hyperlink fx:id="link1" onAction="#registrarse" styleClass="link-registro" text="¿No tenes cuenta? Crear cuenta" textFill="#222">
-                <font>
-                    <Font name="Segoe UI Semibold" size="12.0" />
-                </font>
-            </Hyperlink>
-            <Label styleClass="label-formulario" text="Número de cédula:" textFill="#222">
-                <font>
-                    <Font name="Segoe UI Semibold" size="14.0" />
-                </font>
-            </Label>
-            <TextField fx:id="txtCI" maxWidth="202.0" prefHeight="25.0" styleClass="campo-texto" />
-            <Label styleClass="label-formulario" text="Contraseña:" textFill="#222">
-                <font>
-                    <Font name="Segoe UI Semibold" size="14.0" />
-                </font>
-            </Label>
-            <PasswordField fx:id="txtContrasenhia" maxWidth="202.0" styleClass="campo-texto" />
-            <Button fx:id="btInicioSesion" maxWidth="150.0" onAction="#iniciarSesion" styleClass="boton-azul" text="Iniciar sesión" />
-            <Hyperlink fx:id="link2" onAction="#recuperarAcceso" styleClass="link-registro" text="¿Olvidaste tu contraseña?" />
-        </VBox>
-    </Pane>
+     <VBox alignment="CENTER" fillWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="517.0" prefWidth="362.0" spacing="16" styleClass="contenedor-botones">
+         <ImageView fitHeight="72.0" fitWidth="79.0" pickOnBounds="true" preserveRatio="true">
+             <image>
+                 <Image url="@img/user.png" />
+             </image>
+         </ImageView>
+         <Label styleClass="titulo-principal" text="Iniciar Sesión" textFill="BLACK">
+             <font>
+                 <Font name="Segoe UI Black" size="21.0" />
+             </font>
+         </Label>
+         <Hyperlink fx:id="link1" onAction="#registrarse" styleClass="link-registro" text="¿No tenes cuenta? Crear cuenta" textFill="#222">
+             <font>
+                 <Font name="Segoe UI Semibold" size="12.0" />
+             </font>
+         <VBox.margin>
+            <Insets bottom="30.0" />
+         </VBox.margin>
+         </Hyperlink>
+         <Label styleClass="label-formulario" text="Número de cédula:" textFill="#222">
+             <font>
+                 <Font name="Segoe UI Semibold" size="14.0" />
+             </font>
+         </Label>
+         <TextField fx:id="txtCI" maxWidth="202.0" prefHeight="25.0" styleClass="campo-texto" />
+         <Label styleClass="label-formulario" text="Contraseña:" textFill="#222">
+             <font>
+                 <Font name="Segoe UI Semibold" size="14.0" />
+             </font>
+         </Label>
+         <PasswordField fx:id="txtContrasenhia" maxWidth="202.0" styleClass="campo-texto" />
+         <Button fx:id="btInicioSesion" maxWidth="150.0" onAction="#iniciarSesion" styleClass="boton-azul" text="Iniciar sesión">
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </Button>
+         <Hyperlink fx:id="link2" onAction="#recuperarAcceso" styleClass="link-registro" text="¿Olvidaste tu contraseña?" />
+     </VBox>
 </StackPane>

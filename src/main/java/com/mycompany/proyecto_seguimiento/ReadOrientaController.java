@@ -1,7 +1,9 @@
 package com.mycompany.proyecto_seguimiento;
 
+import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionSelected;
+import com.mycompany.proyecto_seguimiento.clases.Reporte;
 import com.mycompany.proyecto_seguimiento.modelo.OrientacionResumen;
 import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
@@ -188,12 +190,27 @@ public class ReadOrientaController implements Initializable {
 
     @FXML
     private void generarInforme(ActionEvent event) {
-        if (seleccionados.isEmpty()) return;
+        if (seleccionados.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Seleccione al menos una orientación para generar el informe.");
+            alert.showAndWait();
+            return;
+        }
+        if(ControladorUtils.mostrarConfirmacion("Confirmar acción", "¿Desea generar un PDF?")){
+            List<Integer> idsSeleccionados = seleccionados.stream()
+                                          .map(OrientacionResumen::getCod_orientacion)
+                                          .collect(Collectors.toList());
 
-        // Aquí tu lógica: generar informe de las seleccionadas (o lo que quieras hacer)
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Generar informe para " + seleccionados.size() + " orientaciones.");
-        alert.showAndWait();
-        // Ejemplo: JasperReportUtils.generarInformeOrientaciones(seleccionados);
+            // Llamar al generador de reportes
+            Reporte reporte = new Reporte();
+            reporte.generarYGuardarReporte(
+                btn_informe.getScene().getWindow(),
+                "/reporte/orientaR.jasper", // ruta al jasper de orientaciones
+                "reporte_orientaciones",        // nombre del archivo generado
+                idsSeleccionados
+            );
+        }
+        // Extraer los códigos de orientación seleccionados
+       
     }
     @FXML
     private void mostrarFila(MouseEvent event) {
