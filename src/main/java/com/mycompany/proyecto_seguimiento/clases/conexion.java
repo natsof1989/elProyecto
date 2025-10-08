@@ -48,9 +48,9 @@ public class conexion {
     
    public conexion() {
         this.base = "seguimiento";
-        this.host = "127.0.0.1:3306";
-        this.usuario = "root";
-        this.password = "";
+        this.host = "192.168.100.11:3306";
+        this.usuario = "info";
+        this.password = "Infoctn024";
 
 
     }
