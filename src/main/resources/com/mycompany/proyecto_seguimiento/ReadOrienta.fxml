@@ -46,7 +46,7 @@
             </columnResizePolicy>
         </TableView>
         
-        <Button fx:id="btn_informe" disable="true" mnemonicParsing="false" onAction="#generarInforme" prefHeight="42.0" prefWidth="181.0" styleClass="boton-azul" text="Generar informe" />
+        <Button fx:id="btn_informe" disable="true" mnemonicParsing="false" onAction="#generarInforme" prefHeight="42.0" prefWidth="181.0" styleClass="boton-azul" text="Generar PDF" />
     </children>
     
     <padding>

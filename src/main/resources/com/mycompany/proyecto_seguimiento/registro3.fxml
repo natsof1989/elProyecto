@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="466.0" prefWidth="493.0" styleClass="mainFxmlClass" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.Registro3Controller">
+
+<VBox alignment="CENTER" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.Registro3Controller">
    <children>
-      <Pane layoutX="74.0" layoutY="32.0" prefHeight="388.0" prefWidth="346.0" styleClass="panel-contenedor">
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="388.0" prefWidth="346.0" styleClass="panel-contenedor" VBox.vgrow="NEVER">
          <children>
             <Label layoutX="71.0" layoutY="48.0" styleClass="titulo-principal" text="Crear contraseña" />
             <Label layoutX="43.0" layoutY="126.0" styleClass="label-formulario" text="Ingresar contraseña" />
-            <PasswordField fx:id="txt_password" layoutX="43.0" layoutY="161.0" styleClass="campo-texto" />
+            <PasswordField fx:id="txt_password" layoutX="43.0" layoutY="161.0" prefHeight="36.0" prefWidth="254.0" styleClass="campo-texto" />
             <Label layoutX="43.0" layoutY="200.0" styleClass="label-formulario" text="Confirmar contraseña:" />
-            <PasswordField fx:id="txt_password2" layoutX="43.0" layoutY="228.0" styleClass="campo-texto" />
+            <PasswordField fx:id="txt_password2" layoutX="43.0" layoutY="228.0" prefHeight="36.0" prefWidth="254.0" styleClass="campo-texto" />
             <Button fx:id="btn_registro" layoutX="115.0" layoutY="303.0" mnemonicParsing="false" onAction="#guardar_datos" styleClass="boton-azul" text="Siguiente" />
          </children>
       </Pane>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

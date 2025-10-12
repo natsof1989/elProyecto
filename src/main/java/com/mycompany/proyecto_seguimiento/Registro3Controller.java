@@ -89,14 +89,14 @@ public class Registro3Controller implements Initializable {
         String ci = session.getCiUsuario();
         String nombre = session.getNombre();
         String apellido = session.getApellido();
-        String telefono = session.getTelefono();
+        
         String correo = session.getCorreoUsuario();
         String password = session.getPasswordTemporal();
         
         // Aquí deberías llamar a tu UsuarioDAO
         // Ejemplo:
         // UsuarioDAO usuarioDao = new UsuarioDAO(conexion);
-        return usuarioDao.insertarUsuarioCompletoTransaccional(ci, nombre, apellido, telefono, correo, password);
+        return usuarioDao.insertarUsuarioCompletoTransaccional(ci, nombre, apellido, correo, password);
         
         
     }

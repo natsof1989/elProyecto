@@ -29,6 +29,8 @@ public class CasoSeleccionado {
     private String nombreProfesor;
     private String descripcion;
     private byte[] archivo;        // puede ser null si no hay archivo
+    private int id_curso; 
+    private int ciEstudiante; 
 
     
     
@@ -96,7 +98,7 @@ public class CasoSeleccionado {
     public String getEstudiante() {
         return estudiante;
     }
-
+    
     public void setEstudiante(String estudiante) {
         this.estudiante = estudiante;
     }
@@ -170,6 +172,23 @@ public class CasoSeleccionado {
     public void setTutores(List<Tutores> tutores) {
         this.tutores = tutores;
     }
+
+    public int getId_curso() {
+        return id_curso;
+    }
+
+    public void setId_curso(int id_curso) {
+        this.id_curso = id_curso;
+    }
+
+    public int getCiEstudiante() {
+        return ciEstudiante;
+    }
+
+    public void setCiEstudiante(int ciEstudiante) {
+        this.ciEstudiante = ciEstudiante;
+    }
+    
     
     // Método de conveniencia para resetear la instancia si es necesario
     public static void reset() {

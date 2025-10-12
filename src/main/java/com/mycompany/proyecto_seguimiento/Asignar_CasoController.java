@@ -9,16 +9,14 @@ import com.mycompany.proyecto_seguimiento.clases.CasoSeleccionado;
 import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.ET_singleton;
 import com.mycompany.proyecto_seguimiento.clases.EmailUtils;
-import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
-import com.mycompany.proyecto_seguimiento.clases.equipoTecnicoDAO;
 import com.mycompany.proyecto_seguimiento.modelo.equipoTecnico;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -80,7 +78,6 @@ public class Asignar_CasoController implements Initializable {
 
     @FXML
     private void aceptar(ActionEvent event) {
-        
         CasoSeleccionado caso = CasoSeleccionado.getInstancia();
         int idCaso = caso.getIdCaso();
 
@@ -105,58 +102,77 @@ public class Asignar_CasoController implements Initializable {
 
         if (!aInsertar.isEmpty() || !aEliminar.isEmpty()) {
             try {
+                // Guardar asignaciones en DB
                 casoDAO.aplicarCambiosAsignacion(idCaso, aInsertar, aEliminar);
 
-                // Traer todos los miembros del equipo técnico
-                List<equipoTecnico> equipo = casoDAO.getEmailsEquipoTec();
+                // Mostrar cargando
+                ControladorUtils.mostrarAlertaCargando(
+                    "Enviando notificaciones",
+                    "Notificando a los técnicos asignados..."
+                );
 
-                // Recorrer cada miembro y enviar correo si fue asignado
-                for (equipoTecnico miembro : equipo) {
-                    String ci = miembro.getCi();
-                    String email = miembro.getEmail();
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        List<equipoTecnico> equipo = casoDAO.getEmailsEquipoTec();
 
-                    // Si el CI está en la lista de asignados recientemente
-                    if (aInsertar.contains(Integer.valueOf(ci))) {
-                        String asunto = "Nuevo caso asignado";
-                        String mensaje = String.format(
-                            "Hola,\n\n" +
-                            "Se le ha asignado un nuevo caso en el sistema.\n\n" +
-                            "Detalles del caso:\n" +
-                            "- ID del caso: %d\n" + 
-                            "- Descripción del caso: %s\n"+
-                            "- Profesor que generó el caso: %s\n" +
-                            "- Estudiante: %s\n" +
-                            "- Especialidad: %s\n" +
-                            "- Curso: %s\n\n" +
-                            "Por favor, ingrese al sistema para revisarlo.\n\n" +
-                            "Saludos,\n" +
-                            "Sistema de Seguimiento",
-                            idCaso, caso.getDescripcion(),
-                            caso.getNombreProfesor(),
-                            caso.getEstudiante(),
-                            caso.getEspecialidad(),
-                            caso.getCurso()
-                        );
+                        // Recorrer cada miembro y enviar correo si fue asignado
+                        for (equipoTecnico miembro : equipo) {
+                            String ci = miembro.getCi();
+                            String email = miembro.getEmail();
 
-                        EmailUtils.enviarCorreo(email, asunto, mensaje);
+                            if (aInsertar.contains(Integer.valueOf(ci))) {
+                                String asunto = "Nuevo caso asignado";
+                                String mensaje = String.format(
+                                    "Hola,\n\n" +
+                                    "Se le ha asignado un nuevo caso en el sistema.\n\n" +
+                                    "Detalles del caso:\n" +
+                                    "- ID del caso: %d\n" +
+                                    "- Descripción del caso: %s\n" +
+                                    "- Profesor que generó el caso: %s\n" +
+                                    "- Estudiante: %s\n" +
+                                    "- Especialidad: %s\n" +
+                                    "- Curso: %s\n\n" +
+                                    "Por favor, ingrese al sistema para revisarlo.\n\n" +
+                                    "Saludos,\n" +
+                                    "Sistema de Seguimiento",
+                                    idCaso, caso.getDescripcion(),
+                                    caso.getNombreProfesor(),
+                                    caso.getEstudiante(),
+                                    caso.getEspecialidad(),
+                                    caso.getCurso()
+                                );
+
+                                EmailUtils.enviarCorreo(email, asunto, mensaje);
+                            }
+                        }
+                        return null;
                     }
-                }
+                };
 
-                // Actualizar el caso en memoria
-                caso.setAsignados(seleccionados);
+                task.setOnSucceeded(e -> {
+                    ControladorUtils.cerrarAlertaCargando();
+                    caso.setAsignados(seleccionados);
+                    ControladorUtils.mostrarAlertaChill("Éxito", "Asignación exitosa.");
+                    cerrarModal(event);
+                    ControladorUtils.cambiarVista("abrirCaso");
+                });
 
-                ControladorUtils.mostrarAlertaChill("Éxito", "Asignación exitosa.");
-                cerrarModal(event);
-                ControladorUtils.cambiarVista("abrirCaso");
+                task.setOnFailed(e -> {
+                    ControladorUtils.cerrarAlertaCargando();
+                    ControladorUtils.mostrarError("Error", "Los cambios se guardaron, pero falló el envío de correos.", (Exception) task.getException());
+                });
+
+                new Thread(task).start();
+
             } catch (SQLException e) {
-                e.printStackTrace();
-                ControladorUtils.mostrarAlerta("Error", "No se pudo asignar el caso");
+                ControladorUtils.mostrarError("Error", "No se pudo asignar el caso.", e);
             }
         } else {
-            // No hubo cambios → simplemente cerrar
             cerrarModal(event);
         }
     }
+
 
 
 

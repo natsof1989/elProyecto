@@ -13,17 +13,17 @@
 <?import javafx.scene.text.Font?>
 
 <StackPane prefHeight="568.0" prefWidth="599.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.RecuperarAccesoController">
-    <VBox alignment="CENTER" maxHeight="437" maxWidth="427" spacing="20" styleClass="panel-contenedor">
+    <VBox alignment="CENTER" maxHeight="437" maxWidth="490.0" prefHeight="437.0" prefWidth="490.0" spacing="20" styleClass="panel-contenedor">
       <GridPane prefHeight="48.0" prefWidth="379.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="176.0" minWidth="10.0" prefWidth="90.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="277.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="176.0" minWidth="10.0" prefWidth="124.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="336.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints />
         </rowConstraints>
          <children>
-            <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="38.0" prefWidth="56.0" styleClass="boton-azul" text="⬅" />
+            <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="42.0" prefWidth="84.0" styleClass="boton-azul" text="⬅" />
               <Label styleClass="titulo-principal" text="Verificación de cuenta" GridPane.columnIndex="1">
                   <font>
                       <Font name="Segoe UI Semibold" size="24.0" />

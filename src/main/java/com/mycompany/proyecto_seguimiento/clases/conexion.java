@@ -1,51 +1,86 @@
 package com.mycompany.proyecto_seguimiento.clases;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
 
-
+/**
+ * Clase para gestionar la conexión a la base de datos.
+ * Permite la configuración dinámica de los parámetros de conexión mediante un archivo config.properties.
+ * Compatible con los controllers y DAOs del sistema previo.
+ */
 public class conexion {
-    private String base; 
-    private String host; 
-    private String usuario; 
-    private String password; 
-    /*primero nos fuimos a java dependencies, pegamos la dependencia, luego a default packages y 
-    a module info java y dps ya no me acuerdo lgmt pero ajam*/
-    
-    private Connection con; 
 
-    
-    //Hola Sofi, así me dijo copilot que haga para que no me de un error raro en CasoDAO:
-    public Connection getConnection() {
+    private static final String CONFIG_FILE = "config1.properties";
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+
+    // Bloque estático: carga la configuración al iniciar la clase
+    static {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
+            props.load(fis);
+            URL = props.getProperty("url", "jdbc:mysql://127.0.0.1:3306/seguimiento?useSSL=false&serverTimezone=UTC");
+            USER = props.getProperty("usuario", "root");
+            PASSWORD = props.getProperty("contrasena", "");
+        } catch (IOException e) {
+            // Si no existe el archivo, usar valores por defecto
+            URL = "jdbc:mysql://127.0.0.1:3306/seguimiento?useSSL=false&serverTimezone=UTC";
+            USER = "root";
+            PASSWORD = "";
+        }
+    }
+
+    /**
+     * Obtiene una nueva conexión a la base de datos usando los parámetros actuales.
+     * Este método puede ser usado por los controladores y DAOs sin modificar su lógica.
+     * @return Connection activa a la base de datos
+     */
+    public static Connection getConnection() {
         try {
-            if (con == null || con.isClosed()) {
-                String url = "jdbc:mysql://" + host + "/" + base + "?useSSL=false&serverTimezone=UTC";
-                con = DriverManager.getConnection(url, usuario, password);
-                System.out.println("Conectado a la base de datos");
-            }
+            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Conectado a la base de datos");
+            return con;
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("No Conectado: " + ex.getMessage());
+            return null;
         }
-        return con;
     }
-    /*public Connection getConnection() {
-        try {
-            String url= "jdbc:mysql://"+host+"/"+base;//direccion de BD
-            con = DriverManager.getConnection(url, this.usuario, this.password);
-            System.out.println("Conectado");
-        } catch (SQLException ex) {
-            Logger.getLogger(conexion.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("No Conectado");
+
+    /**
+     * Guarda la configuración de la conexión a la base de datos en config.properties.
+     * También actualiza los valores estáticos para futuras conexiones en la misma ejecución.
+     *
+     * @param url        URL completa JDBC de la base de datos
+     * @param usuario    Usuario de la base de datos
+     * @param contrasena Contraseña de la base de datos
+     */
+    public static void guardarConfiguracion(String url, String usuario, String contrasena) {
+        Properties props = new Properties();
+        props.setProperty("url", url);
+        props.setProperty("usuario", usuario);
+        props.setProperty("contrasena", contrasena != null ? contrasena : "");
+
+        try (OutputStream os = new FileOutputStream(CONFIG_FILE)) {
+            props.store(os, "Configuración de la conexión a la base de datos");
+            // Actualiza los valores en memoria
+            URL = url;
+            USER = usuario;
+            PASSWORD = contrasena != null ? contrasena : "";
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return con;
         
-    }*/
-    
-    
+    }
+ 
+       
    public conexion() {
         this.base = "seguimiento";
         this.host = "192.168.100.11:3306";
@@ -55,44 +90,16 @@ public class conexion {
 
     }
 
-
-    public conexion(String base, String host, String usuario, String password) {
-        this.base = base;
-        this.host = host;
-        this.usuario = usuario;
-        this.password = password;
+    // Getters para los valores actuales (opcional, por si los necesitas)
+    public static String getUrl() {
+        return URL;
     }
 
-    public String getBase() {
-        return base;
+    public static String getUsuario() {
+        return USER;
     }
 
-    public void setBase(String base) {
-        this.base = base;
+    public static String getPassword() {
+        return PASSWORD;
     }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
 }

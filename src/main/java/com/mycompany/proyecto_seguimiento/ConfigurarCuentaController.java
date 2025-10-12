@@ -35,7 +35,6 @@ public class ConfigurarCuentaController implements Initializable {
     private TextField txt_apellido;
     @FXML
     private Button btn_edit;
-    @FXML
     private TextField txt_telefono;
     @FXML
     private Button btn_eliminar;
@@ -64,7 +63,7 @@ public class ConfigurarCuentaController implements Initializable {
         this.usuarioDao = new UsuarioDAO(dbConexion.getConnection());
         txt_nombre.setText(session.getUsuarioDatos().getNombre());
         txt_apellido.setText(session.getUsuarioDatos().getApellido());
-        txt_telefono.setText(session.getUsuarioDatos().getTelefono());
+        
         
     }    
 
@@ -123,7 +122,7 @@ public class ConfigurarCuentaController implements Initializable {
         // Deshabilitar controles temporalmente
         txt_nombre.setDisable(true); 
         txt_apellido.setDisable(true); 
-        txt_telefono.setDisable(true); 
+        
         btn_cancelar.setDisable(true); 
         btn_guardar.setDisable(true);
 
@@ -136,20 +135,12 @@ public class ConfigurarCuentaController implements Initializable {
             return; 
         }
 
-        String telefono = txt_telefono.getText().trim();
+        
         String nombre = txt_nombre.getText().trim();
         String apellido = txt_apellido.getText().trim();
 
         // Validar formato del teléfono
-        if (!ControladorUtils.validarNumero(telefono, "TEL")) {
-            ControladorUtils.mostrarAlerta("Error", 
-                "El teléfono debe contener:\n" +
-                "- Solo números\n" +
-                "- 8 o 9 dígitos\n" +
-                "- Sin espacios ni caracteres especiales");
-            reactivarControles();
-            return;
-        }
+       
 
         // Validar campos de texto
         if (!ControladorUtils.validarCamposLetras(txt_nombre, txt_apellido)) {
@@ -164,13 +155,12 @@ public class ConfigurarCuentaController implements Initializable {
             "Confirmar cambios",
             "¿Está seguro que desea guardar los cambios?\n\n" +
             "Nombre: " + nombre + "\n" +
-            "Apellido: " + apellido + "\n" +
-            "Teléfono: " + telefono
+            "Apellido: " + apellido + "\n"
         );
 
         if (confirmar) {
             try {
-                usuarioDao.actualizarDatosBasicos(ci, nombre, apellido, telefono);
+                usuarioDao.actualizarDatosBasicos(ci, nombre, apellido);
                 String email = session.getUsuarioDatos().getEmail(); 
                 session.setUsuarioDatos(usuarioDao.obtenerDatosUsuario(ci)); 
                 ControladorUtils.mostrarAlertaChill("Éxito", "Datos actualizados correctamente");
@@ -189,7 +179,7 @@ public class ConfigurarCuentaController implements Initializable {
     private void reactivarControles() {
         txt_nombre.setText(session.getUsuarioDatos().getNombre());
         txt_apellido.setText(session.getUsuarioDatos().getApellido());
-        txt_telefono.setText(session.getUsuarioDatos().getTelefono());
+        
         txt_nombre.setDisable(true);
         txt_apellido.setDisable(true);
         txt_telefono.setDisable(true);

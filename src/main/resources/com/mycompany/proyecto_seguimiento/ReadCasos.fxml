@@ -51,7 +51,7 @@
       <HBox alignment="CENTER" spacing="50.0">
          <children>
               <Button fx:id="btn_abrirCaso" disable="true" mnemonicParsing="false" onAction="#abrirCaso" prefHeight="42.0" prefWidth="181.0" styleClass="boton-azul" text="Abrir" />
-            <Button fx:id="btn_informe" disable="true" mnemonicParsing="false" onAction="#generarInforme" styleClass="boton-azul" text="Generar informe" />
+            <Button fx:id="btn_informe" disable="true" mnemonicParsing="false" onAction="#generarInforme" styleClass="boton-azul" text="Generar PDF" />
          </children>
       </HBox>
     </children>

@@ -65,9 +65,9 @@ public class UsuarioDAO {
     
     // Verifica si existe un registro COMPLETO (con todos los campos obligatorios)
     public boolean existeRegistroCompleto(String ci) throws SQLException {
-        String sql = "SELECT 1 FROM profesor WHERE CI = ? AND nombre IS NOT NULL AND apellido IS NOT NULL AND password IS NOT NULL AND nro_telefono IS NOT NULL " +
+        String sql = "SELECT 1 FROM profesor WHERE CI = ? AND nombre IS NOT NULL AND apellido IS NOT NULL AND password IS NOT NULL " +
                     "UNION ALL " +
-                    "SELECT 1 FROM equipo_tecnico WHERE CI = ? AND nombre IS NOT NULL AND apellido IS NOT NULL AND password IS NOT NULL AND nro_telefono IS NOT NULL " +
+                    "SELECT 1 FROM equipo_tecnico WHERE CI = ? AND nombre IS NOT NULL AND apellido IS NOT NULL AND password IS NOT NULL " +
                     "LIMIT 1";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, ci);
@@ -167,8 +167,7 @@ public class UsuarioDAO {
             return stmt.executeQuery().next();
         }
     }
-    public boolean insertarUsuarioCompletoTransaccional(String ci, String nombre, String apellido, 
-                                                   String telefono, String correo, String password) 
+    public boolean insertarUsuarioCompletoTransaccional(String ci, String nombre, String apellido, String correo, String password) 
                                                    throws SQLException {
         try {
             conexion.setAutoCommit(false); // Iniciamos transacción
@@ -184,27 +183,27 @@ public class UsuarioDAO {
             boolean exitoEquipoTecnico = false;
 
             if (existeEnProfesor) {
-                String sqlProfesor = "UPDATE profesor SET nombre = ?, apellido = ?, nro_telefono = ?, email = ?, password = ? WHERE CI = ?";
+                String sqlProfesor = "UPDATE profesor SET nombre = ?, apellido = ?, email = ?, password = ? WHERE CI = ?";
                 try (PreparedStatement stmt = conexion.prepareStatement(sqlProfesor)) {
                     stmt.setString(1, nombre);
                     stmt.setString(2, apellido);
-                    stmt.setString(3, telefono);
-                    stmt.setString(4, correo);
-                    stmt.setString(5, password);
-                    stmt.setString(6, ci);
+                    
+                    stmt.setString(3, correo);
+                    stmt.setString(4, password);
+                    stmt.setString(5, ci);
                     exitoProfesor = stmt.executeUpdate() > 0;
                 }
             }
 
             if (existeEnEquipoTecnico) {
-                String sqlEquipo = "UPDATE equipo_tecnico SET nombre = ?, apellido = ?, nro_telefono = ?, email = ?, password = ? WHERE CI = ?";
+                String sqlEquipo = "UPDATE equipo_tecnico SET nombre = ?, apellido = ?, email = ?, password = ? WHERE CI = ?";
                 try (PreparedStatement stmt = conexion.prepareStatement(sqlEquipo)) {
                     stmt.setString(1, nombre);
                     stmt.setString(2, apellido);
-                    stmt.setString(3, telefono);
-                    stmt.setString(4, correo);
-                    stmt.setString(5, password);
-                    stmt.setString(6, ci);
+                    
+                    stmt.setString(3, correo);
+                    stmt.setString(4, password);
+                    stmt.setString(5, ci);
                     exitoEquipoTecnico = stmt.executeUpdate() > 0;
                 }
             }
@@ -227,11 +226,11 @@ public class UsuarioDAO {
 
 
     // Método para actualizar datos básicos (funciona para ambos roles)
-    public boolean actualizarDatosBasicos(String ci, String nuevoNombre, String nuevoApellido, String nuevoTelefono) throws SQLException {
+    public boolean actualizarDatosBasicos(String ci, String nuevoNombre, String nuevoApellido) throws SQLException {
     boolean actualizado = false;
 
-    String sqlProfesor = "UPDATE profesor SET nombre = ?, apellido = ?, nro_telefono = ? WHERE CI = ?";
-    String sqlEquipo = "UPDATE equipo_tecnico SET nombre = ?, apellido = ?, nro_telefono = ? WHERE CI = ?";
+    String sqlProfesor = "UPDATE profesor SET nombre = ?, apellido = ?, WHERE CI = ?";
+    String sqlEquipo = "UPDATE equipo_tecnico SET nombre = ?, apellido = ?, WHERE CI = ?";
 
     try (
         PreparedStatement stmtProfesor = conexion.prepareStatement(sqlProfesor);
@@ -240,15 +239,14 @@ public class UsuarioDAO {
         // Parámetros para profesor
         stmtProfesor.setString(1, nuevoNombre);
         stmtProfesor.setString(2, nuevoApellido);
-        stmtProfesor.setString(3, nuevoTelefono);
-        stmtProfesor.setString(4, ci);
+        stmtProfesor.setString(3, ci);
         int filasProfesor = stmtProfesor.executeUpdate();
 
         // Parámetros para equipo_tecnico
         stmtEquipo.setString(1, nuevoNombre);
         stmtEquipo.setString(2, nuevoApellido);
-        stmtEquipo.setString(3, nuevoTelefono);
-        stmtEquipo.setString(4, ci);
+        
+        stmtEquipo.setString(3, ci);
         int filasEquipo = stmtEquipo.executeUpdate();
 
         // Retorna true si se actualizó al menos una de las dos tablas
@@ -263,8 +261,8 @@ public class UsuarioDAO {
 
     // Método para eliminar cuenta (establece campos a NULL excepto CI y email)
     public boolean desactivarCuenta(String ci) throws SQLException {
-        String sqlProfesor = "UPDATE profesor SET nombre = NULL, apellido = NULL, nro_telefono = NULL, password = '' WHERE CI = ?";
-        String sqlEquipo = "UPDATE equipo_tecnico SET nombre = NULL, apellido = NULL, nro_telefono = NULL, password = '' WHERE CI = ?";
+        String sqlProfesor = "UPDATE profesor SET nombre = NULL, apellido = NULL, password = '' WHERE CI = ?";
+        String sqlEquipo = "UPDATE equipo_tecnico SET nombre = NULL, apellido = NULL, password = '' WHERE CI = ?";
 
         int filasProfesor = 0;
         int filasEquipo = 0;
@@ -304,9 +302,9 @@ public class UsuarioDAO {
     }
     
     public UsuarioDatos obtenerDatosUsuario(String ci) throws SQLException {
-        String sql = "SELECT nombre, apellido, nro_telefono, email FROM profesor WHERE CI = ? " +
+        String sql = "SELECT nombre, apellido, email FROM profesor WHERE CI = ? " +
                      "UNION ALL " +
-                     "SELECT nombre, apellido, nro_telefono, email FROM equipo_tecnico WHERE CI = ? " +
+                     "SELECT nombre, apellido, email FROM equipo_tecnico WHERE CI = ? " +
                      "LIMIT 1";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
@@ -319,7 +317,6 @@ public class UsuarioDAO {
                 return new UsuarioDatos(
                     rs.getString("nombre"),
                     rs.getString("apellido"),
-                    rs.getString("nro_telefono"), 
                     rs.getString("email")
                 );
             }

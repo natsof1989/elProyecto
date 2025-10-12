@@ -11,7 +11,7 @@ package com.mycompany.proyecto_seguimiento.modelo;
 public class UsuarioDatos {
     private String nombre;
     private String apellido;
-    private String telefono;
+    
     private String email; 
 
     public UsuarioDatos() {
@@ -19,10 +19,9 @@ public class UsuarioDatos {
     
     
 
-    public UsuarioDatos(String nombre, String apellido, String telefono, String email) {
+    public UsuarioDatos(String nombre, String apellido, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.telefono = telefono;
         this.email = email; 
     }
 
@@ -42,14 +41,7 @@ public class UsuarioDatos {
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
+    
 
     public String getEmail() {
         return email;

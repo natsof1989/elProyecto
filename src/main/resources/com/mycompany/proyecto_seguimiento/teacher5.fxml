@@ -9,13 +9,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <HBox alignment="CENTER" spacing="10.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.proyecto_seguimiento.Teacher5Controller">
    <children>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="187.0" styleClass="contenedor-botones" HBox.hgrow="ALWAYS">
          <children>
               
-              <Button fx:id="btn_informe" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#generarInforme" prefHeight="47.0" prefWidth="188.0" styleClass="boton-nuevo" text="Generar informe" />
+              <Button fx:id="btn_informe" disable="true" mnemonicParsing="false" onAction="#generarInforme" prefHeight="47.0" prefWidth="186.0" styleClass="boton-nuevo" text="Generar informe" />
             <Button fx:id="btn_volver" mnemonicParsing="false" onAction="#volver" prefHeight="47.0" prefWidth="191.0" styleClass="boton-nuevo" text="Salir" />
          </children>
       </VBox>

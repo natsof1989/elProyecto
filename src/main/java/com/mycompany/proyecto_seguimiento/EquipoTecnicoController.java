@@ -123,4 +123,6 @@ public class EquipoTecnicoController implements Initializable {
             System.out.println("El archivo CHM no existe");
         }
     }
+
+   
 }

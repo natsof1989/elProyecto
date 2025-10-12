@@ -33,8 +33,7 @@ public class Registro2Controller implements Initializable {
     private TextField txt_nombre;
     @FXML
     private TextField txt_apellido;
-    @FXML
-    private TextField txt_telefono;
+    
     @FXML
     private Button btn_registrarse;
     @FXML
@@ -57,24 +56,17 @@ public class Registro2Controller implements Initializable {
     @FXML
     private void reg_insert(ActionEvent event) throws IOException {
     
-        if (ControladorUtils.hayCamposVacios(txt_nombre, txt_apellido, txt_telefono)) {
+        if (ControladorUtils.hayCamposVacios(txt_nombre, txt_apellido)) {
             ControladorUtils.mostrarAlerta("Error", "Todos los campos son obligatorios"); 
             return;
         }
 
         
         
-        String telefono = txt_telefono.getText().trim();
+        
 
         // 3. Validar formato del teléfono (CORRECCIÓN IMPORTANTE: se niega la condición)
-        if (!ControladorUtils.validarNumero(telefono, "TEL")) {
-            ControladorUtils.mostrarAlerta("Error", 
-                "El teléfono debe contener:\n" +
-                "- Solo números\n" +
-                "- 8 o 9 dígitos\n" +
-                "- Sin espacios ni caracteres especiales");
-            return;
-        }
+        
         if (!ControladorUtils.validarCamposLetras(txt_nombre, txt_apellido)) {
             ControladorUtils.mostrarAlerta("Error", 
                 "Nombre y apellido solo pueden contener letras");
@@ -86,7 +78,7 @@ public class Registro2Controller implements Initializable {
     
         session.setNombre(nombre); 
         session.setApellido(apellido); 
-        session.setTelefono(telefono);
+        
         ControladorUtils.cambiarVista("registro3"); 
         
     }

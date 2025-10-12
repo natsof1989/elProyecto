@@ -1,6 +1,8 @@
 package com.mycompany.proyecto_seguimiento;
 
+import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionSelected;
+import com.mycompany.proyecto_seguimiento.clases.Reporte;
 import com.mycompany.proyecto_seguimiento.modelo.OrientacionResumen;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -10,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.Alert;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
@@ -155,12 +159,27 @@ public class ReadOrienta2Controller implements Initializable {
 
     @FXML
     private void generarInforme(ActionEvent event) {
-        if (seleccionados.isEmpty()) return;
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.INFORMATION,
-                "Generar informe para " + seleccionados.size() + " orientaciones."
-        );
-        alert.showAndWait();
+        if (seleccionados.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Seleccione al menos una orientación para generar el informe.");
+            alert.showAndWait();
+            return;
+        }
+        if(ControladorUtils.mostrarConfirmacion("Confirmar acción", "¿Desea generar un PDF?")){
+            List<Integer> idsSeleccionados = seleccionados.stream()
+                                          .map(OrientacionResumen::getCod_orientacion)
+                                          .collect(Collectors.toList());
+
+            // Llamar al generador de reportes
+            Reporte reporte = new Reporte();
+            reporte.generarYGuardarReporte(
+                btn_informe.getScene().getWindow(),
+                "/reporte/orientaR.jasper", // ruta al jasper de orientaciones
+                "reporte_orientaciones",        // nombre del archivo generado
+                idsSeleccionados
+            );
+        }
+        // Extraer los códigos de orientación seleccionados
+        
     }
 
     @FXML

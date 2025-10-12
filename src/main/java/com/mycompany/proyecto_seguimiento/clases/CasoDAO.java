@@ -36,45 +36,47 @@ public class CasoDAO {
     public void cargarDetalleCaso(int idCaso) {
     String sql = "SELECT * FROM seguimiento.vista_caso_detalle WHERE id_caso = ?";
 
-    try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-        stmt.setInt(1, idCaso);
+            stmt.setInt(1, idCaso);
 
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                CasoSeleccionado caso = CasoSeleccionado.getInstancia();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    CasoSeleccionado caso = CasoSeleccionado.getInstancia();
 
-                // Datos del caso
-                caso.setDescripcion(rs.getString("descripcion"));
-                caso.setArchivo(rs.getBytes("archivo"));
-                caso.setExtension(rs.getString("extension") != null ? rs.getString("extension") : "");
-                caso.setCiProfesor(String.valueOf(rs.getInt("profesor_CI")));
-                caso.setNombreProfesor(rs.getString("profesor"));
+                    // Datos del caso
+                    caso.setDescripcion(rs.getString("descripcion"));
+                    caso.setArchivo(rs.getBytes("archivo"));
+                    caso.setExtension(rs.getString("extension") != null ? rs.getString("extension") : "");
+                    caso.setCiProfesor(String.valueOf(rs.getInt("profesor_CI")));
+                    caso.setNombreProfesor(rs.getString("profesor"));
+                    caso.setId_curso(rs.getInt("id_curso"));
+                    caso.setCiEstudiante(rs.getInt("estudiante_CI"));
 
-                // Limpiar lista de tutores
-                if (caso.getTutores() == null) {
-                    caso.setTutores(new ArrayList<>());
-                } else {
-                    caso.getTutores().clear();
+                    // Limpiar lista de tutores
+                    if (caso.getTutores() == null) {
+                        caso.setTutores(new ArrayList<>());
+                    } else {
+                        caso.getTutores().clear();
+                    }
+
+                    // Crear objetos Tutores y agregarlos a la lista
+                    Tutores tutor1 = new Tutores();
+                    tutor1.setGmail(rs.getString("correo_tutor1"));
+                    tutor1.setTelefono(rs.getString("telefono_tutor1"));
+                    caso.getTutores().add(tutor1);
+
+                    Tutores tutor2 = new Tutores();
+                    tutor2.setGmail(rs.getString("correo_tutor2"));
+                    tutor2.setTelefono(rs.getString("telefono_tutor2"));
+                    caso.getTutores().add(tutor2);
                 }
-
-                // Crear objetos Tutores y agregarlos a la lista
-                Tutores tutor1 = new Tutores();
-                tutor1.setGmail(rs.getString("correo_tutor1"));
-                tutor1.setTelefono(rs.getString("telefono_tutor1"));
-                caso.getTutores().add(tutor1);
-
-                Tutores tutor2 = new Tutores();
-                tutor2.setGmail(rs.getString("correo_tutor2"));
-                tutor2.setTelefono(rs.getString("telefono_tutor2"));
-                caso.getTutores().add(tutor2);
             }
-        }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-}
 
    
 
@@ -140,6 +142,22 @@ public class CasoDAO {
         }
         return emails;
     }
+    public List<Integer> getIdCasosPorAlumno(int idCaso) throws SQLException {
+        String sql = "SELECT c2.id_caso FROM caso c1 JOIN caso c2 ON c1.estudiante_CI = c2.estudiante_CI WHERE c1.id_caso = ?";
+
+        List<Integer> idCasos = new ArrayList<>();
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idCaso);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    idCasos.add(rs.getInt("id_caso"));
+                }
+            }
+        }
+        return idCasos;
+    }
+
    public List<equipoTecnico> getEmailsEquipoTec() throws SQLException {
     List<equipoTecnico> equipos = new ArrayList<>(); 
     String sql = "SELECT ci, email FROM vista_equipo_tecnico_especialidad1";

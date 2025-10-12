@@ -9,26 +9,35 @@ import com.mycompany.proyecto_seguimiento.clases.ControladorUtils;
 import com.mycompany.proyecto_seguimiento.clases.EmailUtils;
 import com.mycompany.proyecto_seguimiento.clases.Orientacion;
 import com.mycompany.proyecto_seguimiento.clases.OrientacionDAO;
+import com.mycompany.proyecto_seguimiento.clases.Reporte;
 import com.mycompany.proyecto_seguimiento.clases.SessionManager;
 import com.mycompany.proyecto_seguimiento.clases.conexion;
+import com.mycompany.proyecto_seguimiento.modelo.OrientacionResumen;
 import com.mycompany.proyecto_seguimiento.modelo.Profes;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
@@ -75,6 +84,7 @@ public class WriteOrientacionController implements Initializable {
     private SessionManager session = SessionManager.getInstance(); 
     @FXML
     private Label txt_idOrienta;
+    private int idOrienta; 
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -90,6 +100,7 @@ public class WriteOrientacionController implements Initializable {
         } else{
             autorContent.setVisible(true);
         }
+        btn_imprimir.setDisable(true);
           
     }    
     
@@ -100,81 +111,103 @@ public class WriteOrientacionController implements Initializable {
 
     @FXML
     private void guardar(ActionEvent event) throws SQLException {
-        if (!ControladorUtils.hayCamposVacios(txt_orientacion)) {
-            if (ControladorUtils.mostrarConfirmacion(
-                    "Guardar orientación",
-                    "¿Desea guardar la orientación?\nEsta acción no puede deshacerse")) {
-                autorContent.setVisible(true);
-
-                Orientacion.getInstancia().setOrientacion(txt_orientacion.getText());
-                int idCaso = casoSelected.getIdCaso();
-                int ci = Integer.parseInt(SessionManager.getInstance().getCiUsuario()); 
-                int codOrienta = orientaDAO.insertarOrientacion(txt_orientacion.getText(), idCaso, ci);
-
-                if (codOrienta > 0) {
-                    Timestamp fecha = orientaDAO.getFechaOrientacion(codOrienta);
-                    Orientacion.getInstancia().setFecha(fecha);
-
-                    if (fecha != null) {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                        String fechaFormateada = fecha.toLocalDateTime().format(formatter);
-                        txt_fecha.setText(fechaFormateada);
-                        txt_Autor.setText(session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido());
-                        txt_idOrienta.setText("Orientación: " + String.valueOf(codOrienta));
-                        txt_autorCI.setText(session.getCiUsuario());
-
-                        String depa = orientaDAO.getDescripcionDepartamentoPorCI(ci); 
-                        if (depa != null) {
-                            txt_departamento.setText(depa);
-                        } else {
-                            ControladorUtils.mostrarAlerta("Aviso", "El departamento del equipo técnico no ha sido insertado en la base de datos ");
-                        }
-
-                        // ✅ Aquí añadimos el envío de emails a los profesores de esa especialidad
-                        String especialidad = casoSelected.getEspecialidad(); 
-                        List<Profes> profesList = orientaDAO.getProfesByEspecialidad(especialidad);
-
-                        String subject = "Nueva orientación para la especialidad " + especialidad;
-                        String body = "Estimado profesor/a,\n\n" +
-                                      "Se ha registrado una nueva orientación para el caso del estudiante: " + casoSelected.getEstudiante() + "\n" +
-                                      "Especialidad: " + casoSelected.getEspecialidad() + "\n" +
-                                      "Curso: " + casoSelected.getCurso() + "\n" +
-                                      "Profesor responsable: " + casoSelected.getNombreProfesor() + "\n" +
-                                      "Fecha: " + fechaFormateada + "\n\n" +
-                                      "Detalle de la orientación:\n" + txt_orientacion.getText() + "\n\n" +
-                                     "\n"+"Autor de la orientación: "+ session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido() + "\n" +
-                                      "Atentamente,\nSistema de Seguimiento" ;
-
-                        for (Profes profe : profesList) {
-                            if (profe.getEmail() != null && !profe.getEmail().isEmpty()) {
-                                EmailUtils.enviarCorreo(profe.getEmail(), subject, body);
-                            }
-                        }
-
-                        ControladorUtils.mostrarAlertaChill(
-                            "Carga exitosa",
-                            "La orientación fue guardada con éxito y los profesores de la especialidad han sido notificados."
-                        );
-                        txt_orientacion.setDisable(true);
-                    } else {
-                        ControladorUtils.mostrarAlerta(
-                            "Aviso",
-                            "Ocurrió un error en la carga de la orientación"
-                        );
-                    }
-                } else {
-                    ControladorUtils.mostrarAlerta(
-                        "Aviso",
-                        "Ocurrió un error en la carga de la orientación"
-                    );
-                }
-            }
-        } else {
-            ControladorUtils.mostrarAlerta(
-                "Aviso",
-                "No puede cargar una orientación vacía"
-            );
+        if (ControladorUtils.hayCamposVacios(txt_orientacion)) {
+            ControladorUtils.mostrarAlerta("Aviso", "No puede cargar una orientación vacía");
+            return;
         }
+
+        if (!ControladorUtils.mostrarConfirmacion(
+                "Guardar orientación",
+                "¿Desea guardar la orientación?\nEsta acción no puede deshacerse")) {
+            return;
+        }
+
+        // Bloquear campos y botones
+        autorContent.setVisible(true);
+        txt_orientacion.setDisable(true);
+        btn_guardar.setDisable(true);
+        btn_imprimir.setDisable(false);
+
+        // Guardar orientación
+        int idCaso = casoSelected.getIdCaso();
+        int ci = Integer.parseInt(SessionManager.getInstance().getCiUsuario());
+        int codOrienta = orientaDAO.insertarOrientacion(txt_orientacion.getText(), idCaso, ci);
+        idOrienta = codOrienta; 
+        if (codOrienta <= 0) {
+            ControladorUtils.mostrarAlerta("Aviso", "Ocurrió un error en la carga de la orientación");
+            return;
+        }
+
+        Timestamp fecha = orientaDAO.getFechaOrientacion(codOrienta);
+        if (fecha == null) {
+            ControladorUtils.mostrarAlerta("Aviso", "Ocurrió un error en la carga de la orientación");
+            return;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String fechaFormateada = fecha.toLocalDateTime().format(formatter);
+        txt_fecha.setText(fechaFormateada);
+        txt_Autor.setText(session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido());
+        txt_idOrienta.setText("Orientación: " + codOrienta);
+        txt_autorCI.setText(session.getCiUsuario());
+
+        String depa = orientaDAO.getDescripcionDepartamentoPorCI(ci);
+        if (depa != null) txt_departamento.setText(depa);
+
+        // Preparar envío de correos
+        int id_curso = casoSelected.getId_curso(); 
+        int ciEstudiante = casoSelected.getCiEstudiante(); 
+        
+        List<Profes> profesList = orientaDAO.getProfesByEspecialidad(id_curso, ciEstudiante);
+
+        String subject = "Nueva orientación";
+        String body = "\nEstimado profesor/a,\n\n" +
+                      "Se ha registrado una nueva orientación\n" +
+                        "\nEstudiante: " + casoSelected.getEstudiante() + "\n" +
+                      "Especialidad: " + casoSelected.getEspecialidad() + "\n" +
+                      "Curso: " + casoSelected.getCurso() + "\n" +
+                      "Profesor responsable: " + casoSelected.getNombreProfesor() + "\n" +
+                      "Fecha: " + fechaFormateada + "\n\n" +
+                      "Detalle de la orientación:\n" + txt_orientacion.getText() + "\n\n" +
+                      "Autor: " + session.getUsuarioDatos().getNombre() + " " + session.getUsuarioDatos().getApellido() + "\n" +
+                      "Atentamente,\nSistema de Seguimiento";
+
+        // Abrir modal de cargando
+        Stage cargando = ControladorUtils.mostrarAlertaCargando(
+            "Enviando correos",
+            "Notificando a los profesores del estudiante...."
+        );
+
+        // Ejecutar envío en segundo plano
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                for (Profes profe : profesList) {
+                    if (profe.getEmail() != null && !profe.getEmail().isEmpty()) {
+                        EmailUtils.enviarCorreo(profe.getEmail(), subject, body);
+                    }
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            ControladorUtils.cerrarAlertaCargando(); // cierra el Stage
+            ControladorUtils.mostrarAlertaChill(
+                "Carga exitosa",
+                "La orientación fue guardada y los profesores han sido notificados."
+            );
+        });
+
+        task.setOnFailed(e -> {
+            ControladorUtils.cerrarAlertaCargando();
+            ControladorUtils.mostrarAlerta(
+                "Error",
+                "La orientación se guardó, pero hubo problemas al notificar a los profesores."
+            );
+        });
+
+        new Thread(task).start();
     }
 
 
@@ -183,6 +216,21 @@ public class WriteOrientacionController implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) {
+        if(ControladorUtils.mostrarConfirmacion("Confirmar acción", "¿Desea generar un pdf de esta orietnació?")){
+             // Extraer los códigos de orientación seleccionados
+            List<Integer> idsSeleccionados = new ArrayList<>(); 
+            idsSeleccionados.add(idOrienta); 
+            // Llamar al generador de reportes
+            Reporte reporte = new Reporte();
+            reporte.generarYGuardarReporte(
+                btn_imprimir.getScene().getWindow(),
+                "/reporte/orientaR.jasper", // ruta al jasper de orientaciones
+                "orientacion"+idOrienta,        // nombre del archivo generado
+                idsSeleccionados
+            );
+        }
+
+       
     }
 
 
